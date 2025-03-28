@@ -4,6 +4,56 @@
   
   
   <entry>
+    <title>JUC之线程池</title>
+    <link href="/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0/"/>
+    <url>/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0/</url>
+    
+    <content type="html"><![CDATA[<p>线程池本质上就是管理一组线程，用来完成提交给线程池的任务。提交任务，可以调用线程池的submit方法，把实现了Runnable和Callable的任务对象，提交给线程池；而线程池就可以创建出线程对象来执行任务。</p><p>创建的线程分为两类：核心线程和救急线程。核心线程就是，当线程执行完任务之后，依然要保留到线程池中的线程；而救急线程，则是执行完任务之后，如果没有别的任务了，就不需要保留到线程池中的线程。两者的数目可以通过创建线程池的参数进行控制。当救急线程执行完任务，空闲下来的时候，它不会一直保留在池中，而是经过一段时间，即<code>keepAliveTime</code>，如果这段时间里，该线程没有接到其他任务，那么就会在经过这段时间后销毁。</p><p><code>workQueue</code>任务队列起到对任务的缓冲作用。当任务来临，线程池就会通过<code>threadFactory</code>线程工厂来创建核心线程执行任务；如果核心线程数已经达到<code>corePoolSize</code>，这时就会把任务放到<code>workQueue</code>中，等到核心线程完成了当前的任务，空闲下来了，就会对从<code>workQueue</code>中取出任务执行；如果把任务放到<code>workQueue</code>时，发现<code>workQueue</code>中的任务数量以达到其容量（一般，我们会对<code>workQueue</code>的容量设置一个可以达到的上限，从而避免内存紧张），那么这个时候就会生成救急线程来执行；当救急线程数量也达到最大的时候，即线程池中所有线程的数量达到了<code>maximumPoolSize</code>，就会根据<code>handler</code>拒绝策略进行处理。</p><h2 id="线程池的核心参数"><a href="#线程池的核心参数" class="headerlink" title="线程池的核心参数"></a>线程池的核心参数</h2><ol><li><code>corePoolSize </code>核心线程数目：最多保留的线程数</li><li><code>maximumPoolSize</code>最大线程数目：（核心线程数 + 救急线程数）的最大数目</li><li><code>keepAliveTime</code>生存时间：针对救急线程</li><li><code>unit</code>生存时间的单位：针对救急线程</li><li><code>workQueue</code>：阻塞队列</li><li><code>threadFactory</code>线程工厂：可以为线程创建时起个好名字</li><li><code>handler</code>拒绝策略：有4种</li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>JUC</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>JUC之线程状态</title>
+    <link href="/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/"/>
+    <url>/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/</url>
+    
+    <content type="html"><![CDATA[<h2 id="线程有哪些状态（六种状态）"><a href="#线程有哪些状态（六种状态）" class="headerlink" title="线程有哪些状态（六种状态）"></a>线程有哪些状态（六种状态）</h2><p>Java中的线程分为6种状态，分别是<strong>NEW</strong>（新建）、<strong>RUNNABLE</strong>（可运行）、<strong>TERMINATED</strong>（终结）、<strong>BLOCKED</strong>（阻塞）、<strong>WAITING</strong>（等待）、<strong>TIMED_WAITING</strong>（有时限等待）。</p><p>当使用new关键字创建了一个线程对象之后，<strong>刚刚创建出来的线程对象，就处于新建状态</strong>。<strong>新建状态下的线程，仅仅是一个Java对象，没有和操作系统底层真正的线程关联起来</strong>，这时的线程不会被操作系统分配给CPU。<strong>当调用线程的start方法时，线程从NEW变为了RUNNABLE可运行状态，这时的线程才会与一个真正的线程关联起来。</strong></p><p>实际上，<strong>只有RUNNABLE状态下的线程，才有资格被分配给CPU执行代码</strong>。可运行状态下的线程会在分配给CPU后，执行代码，<strong>当代码执行完毕，线程便会进入TERMINATED终结状态，这个状态意味着线程的生命周期走到了尽头。底层所关联的真正的线程和相关资源也会得到释放</strong>。</p><p>从NEW到RUNNABLE再到TERMINATED，三个状态的转换只能是单项的。而<strong>RUNNABLE状态可以与BLOCKED、WAITING和TIMED_WAITING进行双向的转换，其过程也会复杂一些。</strong></p><p>线程在运行时，可能会出现<strong>多个线程争抢同一把锁</strong>，而锁是互斥的，所以最终只有一个线程会成功，其他线程都会失败，而这些<strong>失败的线程，就会由可运行状态转为阻塞状态。当持锁线程释放锁的时候，就会唤醒前边阻塞的线程</strong>，让他们去进行下一轮的竞争锁的动作，<strong>这一轮中，竞争锁成功的线程，就会由阻塞状态转变为可运行状态，如果失败了，则继续保持阻塞状态。</strong>这就是可运行和阻塞状态之间的转换。</p><p><strong>线程争抢锁成功后，要向下继续运行代码，结果发现还需要满足一些现在不满足的条件，这时候调用锁对象的wait()方法，持锁线程就会进入等待状态。</strong>拿到锁了，但是条件还不满足，不能老占着锁，必须把锁给出去，让别的线程去争抢锁，当条件满足后，再去重新获得这个锁。<strong>WAITING状态想要恢复成RUNNABLE状态，就要让另一个线程调用锁的notify()方法，把等待的线程唤醒，这时候，被唤醒的线程还需要重新争抢锁，成功了就会恢复成可运行线程。</strong></p><p>有时限等待的等待和等待的区别之一就是，切换状态调用的方法不一样。**如果调用锁对象的wait(long)而不是wait()方法，那么线程就会进入有时限等待状态，除了通过notify()方法之外，有时限等待还可以通过等待时间结束，回到可运行状态。等待时间为wait(long)的参数，单位为毫秒。除了调用锁对象的wait(long)会让线程进入有时限等待外，还可以通过调用sleep(long)方法，来进入有时限等待状态。参数为等待时间，单位为毫秒，超时后就可以恢复为可运行状态。 **</p><h2 id="线程有哪些状态（五种状态）"><a href="#线程有哪些状态（五种状态）" class="headerlink" title="线程有哪些状态（五种状态）"></a>线程有哪些状态（五种状态）</h2><p>线程的状态在Java层面是六种，但是在<strong>操作系统层面，则是五种：新建、就绪、运行、终结、阻塞</strong>。对比Java中线程的六种状态，RUNNABLE状态对应了就绪和运行，BLOCKED、WAITING、TIMED_WAITING三种状态，以及阻塞I&#x2F;O（Java中区分不了这种状态），共同对应了阻塞。</p><p>对于新建和终结，和Java中的NEW和TERMINATED较为相似，再次不多赘述。</p><p><strong>当线程可以分到CPU时间，并且正在执行，则为运行态；当线程有机会分到CPU时间，但是当前并未分配到CPU执行时间，则为就绪态；当线程不能分到CPU时间，则为阻塞态。</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>JUC</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Java单例模式</title>
     <link href="/2025/02/23/Java%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
     <url>/2025/02/23/Java%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
