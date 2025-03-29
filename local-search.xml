@@ -4,6 +4,60 @@
   
   
   <entry>
+    <title>JUC之Lock vs synchronized</title>
+    <link href="/2025/03/30/synchronized/"/>
+    <url>/2025/03/30/synchronized/</url>
+    
+    <content type="html"><![CDATA[<p>Lock和synchronized都能实现锁的功能，但是两者之间有着区别。</p><h2 id="语法层面"><a href="#语法层面" class="headerlink" title="语法层面"></a>语法层面</h2><ul><li><strong>synchronized是关键字</strong>，源码位于jvm，用cpp实现。</li><li><strong>Lock是接口</strong>，源码由jdk提供，用Java语言实现。</li><li><strong>使用synchronized时，退出同步代码块时，锁会自动释放；而使用Lock时，需要我们手动调用unlock方法释放锁。</strong></li></ul><h2 id="功能层面"><a href="#功能层面" class="headerlink" title="功能层面"></a>功能层面</h2><ul><li><strong>两者都是悲观锁，都具备基本的互斥、同步、锁重入功能。</strong></li><li><strong>Lock提供了许多synchronized所不具备的功能</strong>，比如获取等待状态、公平锁、可打断、可超时、多条件变量。<ul><li>Lock有相应的方法来获取那些线程被阻塞或等待。</li><li>Lock支持公平锁和非公平锁，synchronized只支持非公平锁。公平锁的意思是，争抢锁失败的线程在下次争抢锁时是按照先来先得的、不允许插队的，反之则为非公平锁。（但其实公平锁的吞吐量并不如非公平锁高）</li><li>这里可打断和可超时的意思是指，当一个线程想要获取一个锁的时候，如果锁已经被另一个线程占有了，如果我们使用的是synchronized，那么这个线程就只能一直等待同步代码块执行完毕，同步代码块中间不能被打断，等待锁的过程中没有超时时限；对于Lock锁，提供了对应的方法，比如一段时间没等到锁，就不要等下去了。</li><li>Lock还支持多组条件变量且可以有多个等待队列；而synchronized只能支持一组条件变量，只能有一个等待队列</li></ul></li><li><strong>Lock有适合不同场景的实现</strong>，比如ReentrantLock（可重入锁）、ReentrantTReadWriteLock（可重入读写锁，更适合读多写少的场景）。</li></ul><h2 id="性能层面"><a href="#性能层面" class="headerlink" title="性能层面"></a>性能层面</h2><ul><li><strong>在没有竞争或竞争很少的时候，synchronized</strong>做了很多优化，如偏向锁、轻量级锁等，<strong>性能不错</strong>。</li><li><strong>在竞争激烈的情况下，Lock的实现通常会提供更好的性能。</strong></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Java</tag>
+      
+      <tag>JUC</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>JUC之sleep vs wait</title>
+    <link href="/2025/03/30/wait/"/>
+    <url>/2025/03/30/wait/</url>
+    
+    <content type="html"><![CDATA[<p>在<a href="https://flowertea.site/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/">JUC之线程状态</a>这篇博客中，我提到了<strong>除了调用锁对象的wait(long)会让线程进入有时限等待外，还可以通过调用sleep(long)方法，来进入有时限等待状态。</strong>在这篇博客中，我就讲讲两者的对比。</p><h2 id="共同点"><a href="#共同点" class="headerlink" title="共同点"></a>共同点</h2><ul><li><strong>wait()、wait(long)和sleep(long)的效果都是让当前线程暂时放弃CPU的使用权，进入阻塞状态</strong>。</li><li>三者都可以被打断唤醒。</li></ul><h2 id="不同点"><a href="#不同点" class="headerlink" title="不同点"></a>不同点</h2><h3 id="方法归属不同"><a href="#方法归属不同" class="headerlink" title="方法归属不同"></a>方法归属不同</h3><ul><li><strong>sleep(long)是Thread的静态方法。</strong></li><li><strong>wait()、wait(long)则是Object的成员方法</strong>，因此，每个对象都有这个方法。</li></ul><h3 id="醒来时机不同"><a href="#醒来时机不同" class="headerlink" title="醒来时机不同"></a>醒来时机不同</h3><p>三者除了都可以被打断唤醒外，醒来时机还有些不同：</p><ul><li><strong>执行wait(long)和sleep(long)的线程都会在等待相应时间（单位为毫秒）后醒来</strong>，而wait则不会。</li><li><strong>wait和wait(long)则还可以被notify唤醒</strong>，并且如果执行wait()的线程如果不被唤醒，就会一直等下去。</li></ul><h3 id="锁特性不同"><a href="#锁特性不同" class="headerlink" title="锁特性不同"></a>锁特性不同</h3><ul><li><strong>wait方法的调用必须先获取wait对象的锁，而sleep则无此限制</strong>（线程未必是持有锁才能运行）。</li><li><strong>wait方法执行后，会释放对象锁</strong>，允许其他线程获得该对象锁。（锁执行的wait，锁是自由的）。</li><li><strong>sleep方法</strong>如果在synchronized代码块中执行，则<strong>不会释放对象锁</strong>。（线程执行的sleep，带着锁睡觉）。</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Java</tag>
+      
+      <tag>JUC</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>JUC之线程池</title>
     <link href="/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0/"/>
     <url>/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0/</url>
@@ -35,7 +89,7 @@
     <link href="/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/"/>
     <url>/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/</url>
     
-    <content type="html"><![CDATA[<h2 id="线程有哪些状态（六种状态）"><a href="#线程有哪些状态（六种状态）" class="headerlink" title="线程有哪些状态（六种状态）"></a>线程有哪些状态（六种状态）</h2><p>Java中的线程分为6种状态，分别是<strong>NEW</strong>（新建）、<strong>RUNNABLE</strong>（可运行）、<strong>TERMINATED</strong>（终结）、<strong>BLOCKED</strong>（阻塞）、<strong>WAITING</strong>（等待）、<strong>TIMED_WAITING</strong>（有时限等待）。</p><p>当使用new关键字创建了一个线程对象之后，<strong>刚刚创建出来的线程对象，就处于新建状态</strong>。<strong>新建状态下的线程，仅仅是一个Java对象，没有和操作系统底层真正的线程关联起来</strong>，这时的线程不会被操作系统分配给CPU。<strong>当调用线程的start方法时，线程从NEW变为了RUNNABLE可运行状态，这时的线程才会与一个真正的线程关联起来。</strong></p><p>实际上，<strong>只有RUNNABLE状态下的线程，才有资格被分配给CPU执行代码</strong>。可运行状态下的线程会在分配给CPU后，执行代码，<strong>当代码执行完毕，线程便会进入TERMINATED终结状态，这个状态意味着线程的生命周期走到了尽头。底层所关联的真正的线程和相关资源也会得到释放</strong>。</p><p>从NEW到RUNNABLE再到TERMINATED，三个状态的转换只能是单项的。而<strong>RUNNABLE状态可以与BLOCKED、WAITING和TIMED_WAITING进行双向的转换，其过程也会复杂一些。</strong></p><p>线程在运行时，可能会出现<strong>多个线程争抢同一把锁</strong>，而锁是互斥的，所以最终只有一个线程会成功，其他线程都会失败，而这些<strong>失败的线程，就会由可运行状态转为阻塞状态。当持锁线程释放锁的时候，就会唤醒前边阻塞的线程</strong>，让他们去进行下一轮的竞争锁的动作，<strong>这一轮中，竞争锁成功的线程，就会由阻塞状态转变为可运行状态，如果失败了，则继续保持阻塞状态。</strong>这就是可运行和阻塞状态之间的转换。</p><p><strong>线程争抢锁成功后，要向下继续运行代码，结果发现还需要满足一些现在不满足的条件，这时候调用锁对象的wait()方法，持锁线程就会进入等待状态。</strong>拿到锁了，但是条件还不满足，不能老占着锁，必须把锁给出去，让别的线程去争抢锁，当条件满足后，再去重新获得这个锁。<strong>WAITING状态想要恢复成RUNNABLE状态，就要让另一个线程调用锁的notify()方法，把等待的线程唤醒，这时候，被唤醒的线程还需要重新争抢锁，成功了就会恢复成可运行线程。</strong></p><p>有时限等待的等待和等待的区别之一就是，切换状态调用的方法不一样。**如果调用锁对象的wait(long)而不是wait()方法，那么线程就会进入有时限等待状态，除了通过notify()方法之外，有时限等待还可以通过等待时间结束，回到可运行状态。等待时间为wait(long)的参数，单位为毫秒。除了调用锁对象的wait(long)会让线程进入有时限等待外，还可以通过调用sleep(long)方法，来进入有时限等待状态。参数为等待时间，单位为毫秒，超时后就可以恢复为可运行状态。 **</p><h2 id="线程有哪些状态（五种状态）"><a href="#线程有哪些状态（五种状态）" class="headerlink" title="线程有哪些状态（五种状态）"></a>线程有哪些状态（五种状态）</h2><p>线程的状态在Java层面是六种，但是在<strong>操作系统层面，则是五种：新建、就绪、运行、终结、阻塞</strong>。对比Java中线程的六种状态，RUNNABLE状态对应了就绪和运行，BLOCKED、WAITING、TIMED_WAITING三种状态，以及阻塞I&#x2F;O（Java中区分不了这种状态），共同对应了阻塞。</p><p>对于新建和终结，和Java中的NEW和TERMINATED较为相似，再次不多赘述。</p><p><strong>当线程可以分到CPU时间，并且正在执行，则为运行态；当线程有机会分到CPU时间，但是当前并未分配到CPU执行时间，则为就绪态；当线程不能分到CPU时间，则为阻塞态。</strong></p>]]></content>
+    <content type="html"><![CDATA[<h2 id="线程有哪些状态（六种状态）"><a href="#线程有哪些状态（六种状态）" class="headerlink" title="线程有哪些状态（六种状态）"></a>线程有哪些状态（六种状态）</h2><p>Java中的线程分为6种状态，分别是<strong>NEW</strong>（新建）、<strong>RUNNABLE</strong>（可运行）、<strong>TERMINATED</strong>（终结）、<strong>BLOCKED</strong>（阻塞）、<strong>WAITING</strong>（等待）、<strong>TIMED_WAITING</strong>（有时限等待）。</p><p>当使用new关键字创建了一个线程对象之后，<strong>刚刚创建出来的线程对象，就处于新建状态</strong>。<strong>新建状态下的线程，仅仅是一个Java对象，没有和操作系统底层真正的线程关联起来</strong>，这时的线程不会被操作系统分配给CPU。<strong>当调用线程的start方法时，线程从NEW变为了RUNNABLE可运行状态，这时的线程才会与一个真正的线程关联起来。</strong></p><p>实际上，<strong>只有RUNNABLE状态下的线程，才有资格被分配给CPU执行代码</strong>。可运行状态下的线程会在分配给CPU后，执行代码，<strong>当代码执行完毕，线程便会进入TERMINATED终结状态，这个状态意味着线程的生命周期走到了尽头。底层所关联的真正的线程和相关资源也会得到释放</strong>。</p><p>从NEW到RUNNABLE再到TERMINATED，三个状态的转换只能是单项的。而<strong>RUNNABLE状态可以与BLOCKED、WAITING和TIMED_WAITING进行双向的转换，其过程也会复杂一些。</strong></p><p>线程在运行时，可能会出现<strong>多个线程争抢同一把锁</strong>，而锁是互斥的，所以最终只有一个线程会成功，其他线程都会失败，而这些<strong>失败的线程，就会由可运行状态转为阻塞状态。当持锁线程释放锁的时候，就会唤醒前边阻塞的线程</strong>，让他们去进行下一轮的竞争锁的动作，<strong>这一轮中，竞争锁成功的线程，就会由阻塞状态转变为可运行状态，如果失败了，则继续保持阻塞状态。</strong>这就是可运行和阻塞状态之间的转换。</p><p><strong>线程争抢锁成功后，要向下继续运行代码，结果发现还需要满足一些现在不满足的条件，这时候调用锁对象的wait()方法，持锁线程就会进入等待状态。</strong>拿到锁了，但是条件还不满足，不能老占着锁，必须把锁给出去，让别的线程去争抢锁，当条件满足后，再去重新获得这个锁。<strong>WAITING状态想要恢复成RUNNABLE状态，就要让另一个线程调用锁的notify()方法，把等待的线程唤醒，这时候，被唤醒的线程还需要重新争抢锁，成功了就会恢复成可运行线程。</strong></p><p>有时限等待的等待和等待的区别之一就是，切换状态调用的方法不一样。<strong>如果调用锁对象的wait(long)而不是wait()方法，那么线程就会进入有时限等待状态，除了通过notify()方法之外，有时限等待还可以通过等待时间结束，回到可运行状态。等待时间为wait(long)的参数，单位为毫秒。除了调用锁对象的wait(long)会让线程进入有时限等待外，还可以通过调用sleep(long)方法，来进入有时限等待状态。参数为等待时间，单位为毫秒，超时后就可以恢复为可运行状态。</strong></p><h2 id="线程有哪些状态（五种状态）"><a href="#线程有哪些状态（五种状态）" class="headerlink" title="线程有哪些状态（五种状态）"></a>线程有哪些状态（五种状态）</h2><p>线程的状态在Java层面是六种，但是在<strong>操作系统层面，则是五种：新建、就绪、运行、终结、阻塞</strong>。对比Java中线程的六种状态，RUNNABLE状态对应了就绪和运行，BLOCKED、WAITING、TIMED_WAITING三种状态，以及阻塞I&#x2F;O（Java中区分不了这种状态），共同对应了阻塞。</p><p>对于新建和终结，和Java中的NEW和TERMINATED较为相似，再次不多赘述。</p><p><strong>当线程可以分到CPU时间，并且正在执行，则为运行态；当线程有机会分到CPU时间，但是当前并未分配到CPU执行时间，则为就绪态；当线程不能分到CPU时间，则为阻塞态。</strong></p>]]></content>
     
     
     <categories>

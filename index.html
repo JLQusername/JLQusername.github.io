@@ -229,6 +229,132 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2025/03/30/synchronized/" target="_self">
+          JUC之Lock vs synchronized
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/03/30/synchronized/" target="_self">
+        <div>
+          Lock和synchronized都能实现锁的功能，但是两者之间有着区别。 语法层面 synchronized是关键字，源码位于jvm，用cpp实现。 Lock是接口，源码由jdk提供，用Java语言实现。 使用synchronized时，退出同步代码块时，锁会自动释放；而使用Lock时，需要我们手动调用unlock方法释放锁。  功能层面 两者都是悲观锁，都具备基本的互斥、同步、锁重入功能。 L
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-03-30 04:39" pubdate>
+              2025-03-30
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Java/">#Java</a>
+            
+              <a href="/tags/JUC/">#JUC</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/03/30/wait/" target="_self">
+          JUC之sleep vs wait
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/03/30/wait/" target="_self">
+        <div>
+          在JUC之线程状态这篇博客中，我提到了除了调用锁对象的wait(long)会让线程进入有时限等待外，还可以通过调用sleep(long)方法，来进入有时限等待状态。在这篇博客中，我就讲讲两者的对比。 共同点 wait()、wait(long)和sleep(long)的效果都是让当前线程暂时放弃CPU的使用权，进入阻塞状态。 三者都可以被打断唤醒。  不同点方法归属不同 sleep(long)是Th
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-03-30 04:39" pubdate>
+              2025-03-30
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Java/">#Java</a>
+            
+              <a href="/tags/JUC/">#JUC</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0/" target="_self">
           JUC之线程池
         </a>

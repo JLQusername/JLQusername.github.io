@@ -19,15 +19,15 @@
   <meta name="author" content="B907">
   <meta name="keywords" content="">
   
-    <meta name="description" content="线程池本质上就是管理一组线程，用来完成提交给线程池的任务。提交任务，可以调用线程池的submit方法，把实现了Runnable和Callable的任务对象，提交给线程池；而线程池就可以创建出线程对象来执行任务。 创建的线程分为两类：核心线程和救急线程。核心线程就是，当线程执行完任务之后，依然要保留到线程池中的线程；而救急线程，则是执行完任务之后，如果没有别的任务了，就不需要保留到线程池中的线程。两">
+    <meta name="description" content="Lock和synchronized都能实现锁的功能，但是两者之间有着区别。 语法层面 synchronized是关键字，源码位于jvm，用cpp实现。 Lock是接口，源码由jdk提供，用Java语言实现。 使用synchronized时，退出同步代码块时，锁会自动释放；而使用Lock时，需要我们手动调用unlock方法释放锁。  功能层面 两者都是悲观锁，都具备基本的互斥、同步、锁重入功能。 L">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JUC之线程池">
-<meta property="og:url" content="https://jlqusername.github.io/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0/index.html">
+<meta property="og:title" content="JUC之Lock vs synchronized">
+<meta property="og:url" content="https://jlqusername.github.io/2025/03/30/synchronized/index.html">
 <meta property="og:site_name" content="换功臣的个人博客网站">
-<meta property="og:description" content="线程池本质上就是管理一组线程，用来完成提交给线程池的任务。提交任务，可以调用线程池的submit方法，把实现了Runnable和Callable的任务对象，提交给线程池；而线程池就可以创建出线程对象来执行任务。 创建的线程分为两类：核心线程和救急线程。核心线程就是，当线程执行完任务之后，依然要保留到线程池中的线程；而救急线程，则是执行完任务之后，如果没有别的任务了，就不需要保留到线程池中的线程。两">
+<meta property="og:description" content="Lock和synchronized都能实现锁的功能，但是两者之间有着区别。 语法层面 synchronized是关键字，源码位于jvm，用cpp实现。 Lock是接口，源码由jdk提供，用Java语言实现。 使用synchronized时，退出同步代码块时，锁会自动释放；而使用Lock时，需要我们手动调用unlock方法释放锁。  功能层面 两者都是悲观锁，都具备基本的互斥、同步、锁重入功能。 L">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-03-28T17:51:59.965Z">
-<meta property="article:modified_time" content="2025-03-28T17:59:24.623Z">
+<meta property="article:published_time" content="2025-03-29T20:39:40.633Z">
+<meta property="article:modified_time" content="2025-03-29T20:41:27.136Z">
 <meta property="article:author" content="B907">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="JUC">
@@ -37,7 +37,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>JUC之线程池 - 换功臣的个人博客网站</title>
+  <title>JUC之Lock vs synchronized - 换功臣的个人博客网站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +203,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="JUC之线程池"></span>
+            <span id="subtitle" data-typed-text="JUC之Lock vs synchronized"></span>
           
         </div>
 
@@ -219,8 +219,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-03-29 01:51" pubdate>
-          2025年3月29日 凌晨
+        <time datetime="2025-03-30 04:39" pubdate>
+          2025年3月30日 凌晨
         </time>
       </span>
     
@@ -231,7 +231,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          564 字
+          517 字
         
       </span>
     
@@ -288,23 +288,32 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">JUC之线程池</h1>
+            <h1 id="seo-header">JUC之Lock vs synchronized</h1>
             
             
               <div class="markdown-body">
                 
-                <p>线程池本质上就是管理一组线程，用来完成提交给线程池的任务。提交任务，可以调用线程池的submit方法，把实现了Runnable和Callable的任务对象，提交给线程池；而线程池就可以创建出线程对象来执行任务。</p>
-<p>创建的线程分为两类：核心线程和救急线程。核心线程就是，当线程执行完任务之后，依然要保留到线程池中的线程；而救急线程，则是执行完任务之后，如果没有别的任务了，就不需要保留到线程池中的线程。两者的数目可以通过创建线程池的参数进行控制。当救急线程执行完任务，空闲下来的时候，它不会一直保留在池中，而是经过一段时间，即<code>keepAliveTime</code>，如果这段时间里，该线程没有接到其他任务，那么就会在经过这段时间后销毁。</p>
-<p><code>workQueue</code>任务队列起到对任务的缓冲作用。当任务来临，线程池就会通过<code>threadFactory</code>线程工厂来创建核心线程执行任务；如果核心线程数已经达到<code>corePoolSize</code>，这时就会把任务放到<code>workQueue</code>中，等到核心线程完成了当前的任务，空闲下来了，就会对从<code>workQueue</code>中取出任务执行；如果把任务放到<code>workQueue</code>时，发现<code>workQueue</code>中的任务数量以达到其容量（一般，我们会对<code>workQueue</code>的容量设置一个可以达到的上限，从而避免内存紧张），那么这个时候就会生成救急线程来执行；当救急线程数量也达到最大的时候，即线程池中所有线程的数量达到了<code>maximumPoolSize</code>，就会根据<code>handler</code>拒绝策略进行处理。</p>
-<h2 id="线程池的核心参数"><a href="#线程池的核心参数" class="headerlink" title="线程池的核心参数"></a>线程池的核心参数</h2><ol>
-<li><code>corePoolSize </code>核心线程数目：最多保留的线程数</li>
-<li><code>maximumPoolSize</code>最大线程数目：（核心线程数 + 救急线程数）的最大数目</li>
-<li><code>keepAliveTime</code>生存时间：针对救急线程</li>
-<li><code>unit</code>生存时间的单位：针对救急线程</li>
-<li><code>workQueue</code>：阻塞队列</li>
-<li><code>threadFactory</code>线程工厂：可以为线程创建时起个好名字</li>
-<li><code>handler</code>拒绝策略：有4种</li>
-</ol>
+                <p>Lock和synchronized都能实现锁的功能，但是两者之间有着区别。</p>
+<h2 id="语法层面"><a href="#语法层面" class="headerlink" title="语法层面"></a>语法层面</h2><ul>
+<li><strong>synchronized是关键字</strong>，源码位于jvm，用cpp实现。</li>
+<li><strong>Lock是接口</strong>，源码由jdk提供，用Java语言实现。</li>
+<li><strong>使用synchronized时，退出同步代码块时，锁会自动释放；而使用Lock时，需要我们手动调用unlock方法释放锁。</strong></li>
+</ul>
+<h2 id="功能层面"><a href="#功能层面" class="headerlink" title="功能层面"></a>功能层面</h2><ul>
+<li><strong>两者都是悲观锁，都具备基本的互斥、同步、锁重入功能。</strong></li>
+<li><strong>Lock提供了许多synchronized所不具备的功能</strong>，比如获取等待状态、公平锁、可打断、可超时、多条件变量。<ul>
+<li>Lock有相应的方法来获取那些线程被阻塞或等待。</li>
+<li>Lock支持公平锁和非公平锁，synchronized只支持非公平锁。公平锁的意思是，争抢锁失败的线程在下次争抢锁时是按照先来先得的、不允许插队的，反之则为非公平锁。（但其实公平锁的吞吐量并不如非公平锁高）</li>
+<li>这里可打断和可超时的意思是指，当一个线程想要获取一个锁的时候，如果锁已经被另一个线程占有了，如果我们使用的是synchronized，那么这个线程就只能一直等待同步代码块执行完毕，同步代码块中间不能被打断，等待锁的过程中没有超时时限；对于Lock锁，提供了对应的方法，比如一段时间没等到锁，就不要等下去了。</li>
+<li>Lock还支持多组条件变量且可以有多个等待队列；而synchronized只能支持一组条件变量，只能有一个等待队列</li>
+</ul>
+</li>
+<li><strong>Lock有适合不同场景的实现</strong>，比如ReentrantLock（可重入锁）、ReentrantTReadWriteLock（可重入读写锁，更适合读多写少的场景）。</li>
+</ul>
+<h2 id="性能层面"><a href="#性能层面" class="headerlink" title="性能层面"></a>性能层面</h2><ul>
+<li><strong>在没有竞争或竞争很少的时候，synchronized</strong>做了很多优化，如偏向锁、轻量级锁等，<strong>性能不错</strong>。</li>
+<li><strong>在竞争激烈的情况下，Lock的实现通常会提供更好的性能。</strong></li>
+</ul>
 
                 
               </div>
@@ -352,8 +361,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>JUC之线程池</div>
-      <div>https://jlqusername.github.io/2025/03/29/JUC之线程池/</div>
+      <div>JUC之Lock vs synchronized</div>
+      <div>https://jlqusername.github.io/2025/03/30/synchronized/</div>
     </div>
     <div class="license-meta">
       
@@ -365,7 +374,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年3月29日</div>
+          <div>2025年3月30日</div>
         </div>
       
       
@@ -397,18 +406,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/03/30/wait/" title="JUC之sleep vs wait">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">JUC之sleep vs wait</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/" title="JUC之线程状态">
-                        <span class="hidden-mobile">JUC之线程状态</span>
+                      <a href="/2025/03/30/wait/" title="JUC之sleep vs wait">
+                        <span class="hidden-mobile">JUC之sleep vs wait</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

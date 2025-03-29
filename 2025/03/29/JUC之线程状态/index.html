@@ -27,7 +27,7 @@
 <meta property="og:description" content="线程有哪些状态（六种状态）Java中的线程分为6种状态，分别是NEW（新建）、RUNNABLE（可运行）、TERMINATED（终结）、BLOCKED（阻塞）、WAITING（等待）、TIMED_WAITING（有时限等待）。 当使用new关键字创建了一个线程对象之后，刚刚创建出来的线程对象，就处于新建状态。新建状态下的线程，仅仅是一个Java对象，没有和操作系统底层真正的线程关联起来，这时的线程">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-03-28T17:51:51.873Z">
-<meta property="article:modified_time" content="2025-03-28T17:59:31.358Z">
+<meta property="article:modified_time" content="2025-03-29T20:40:34.292Z">
 <meta property="article:author" content="B907">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="JUC">
@@ -299,7 +299,7 @@
 <p>从NEW到RUNNABLE再到TERMINATED，三个状态的转换只能是单项的。而<strong>RUNNABLE状态可以与BLOCKED、WAITING和TIMED_WAITING进行双向的转换，其过程也会复杂一些。</strong></p>
 <p>线程在运行时，可能会出现<strong>多个线程争抢同一把锁</strong>，而锁是互斥的，所以最终只有一个线程会成功，其他线程都会失败，而这些<strong>失败的线程，就会由可运行状态转为阻塞状态。当持锁线程释放锁的时候，就会唤醒前边阻塞的线程</strong>，让他们去进行下一轮的竞争锁的动作，<strong>这一轮中，竞争锁成功的线程，就会由阻塞状态转变为可运行状态，如果失败了，则继续保持阻塞状态。</strong>这就是可运行和阻塞状态之间的转换。</p>
 <p><strong>线程争抢锁成功后，要向下继续运行代码，结果发现还需要满足一些现在不满足的条件，这时候调用锁对象的wait()方法，持锁线程就会进入等待状态。</strong>拿到锁了，但是条件还不满足，不能老占着锁，必须把锁给出去，让别的线程去争抢锁，当条件满足后，再去重新获得这个锁。<strong>WAITING状态想要恢复成RUNNABLE状态，就要让另一个线程调用锁的notify()方法，把等待的线程唤醒，这时候，被唤醒的线程还需要重新争抢锁，成功了就会恢复成可运行线程。</strong></p>
-<p>有时限等待的等待和等待的区别之一就是，切换状态调用的方法不一样。**如果调用锁对象的wait(long)而不是wait()方法，那么线程就会进入有时限等待状态，除了通过notify()方法之外，有时限等待还可以通过等待时间结束，回到可运行状态。等待时间为wait(long)的参数，单位为毫秒。除了调用锁对象的wait(long)会让线程进入有时限等待外，还可以通过调用sleep(long)方法，来进入有时限等待状态。参数为等待时间，单位为毫秒，超时后就可以恢复为可运行状态。 **</p>
+<p>有时限等待的等待和等待的区别之一就是，切换状态调用的方法不一样。<strong>如果调用锁对象的wait(long)而不是wait()方法，那么线程就会进入有时限等待状态，除了通过notify()方法之外，有时限等待还可以通过等待时间结束，回到可运行状态。等待时间为wait(long)的参数，单位为毫秒。除了调用锁对象的wait(long)会让线程进入有时限等待外，还可以通过调用sleep(long)方法，来进入有时限等待状态。参数为等待时间，单位为毫秒，超时后就可以恢复为可运行状态。</strong></p>
 <h2 id="线程有哪些状态（五种状态）"><a href="#线程有哪些状态（五种状态）" class="headerlink" title="线程有哪些状态（五种状态）"></a>线程有哪些状态（五种状态）</h2><p>线程的状态在Java层面是六种，但是在<strong>操作系统层面，则是五种：新建、就绪、运行、终结、阻塞</strong>。对比Java中线程的六种状态，RUNNABLE状态对应了就绪和运行，BLOCKED、WAITING、TIMED_WAITING三种状态，以及阻塞I&#x2F;O（Java中区分不了这种状态），共同对应了阻塞。</p>
 <p>对于新建和终结，和Java中的NEW和TERMINATED较为相似，再次不多赘述。</p>
 <p><strong>当线程可以分到CPU时间，并且正在执行，则为运行态；当线程有机会分到CPU时间，但是当前并未分配到CPU执行时间，则为就绪态；当线程不能分到CPU时间，则为阻塞态。</strong></p>
