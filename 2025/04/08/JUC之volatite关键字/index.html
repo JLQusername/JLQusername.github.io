@@ -19,15 +19,15 @@
   <meta name="author" content="B907">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Lock和synchronized都能实现锁的功能，但是两者之间有着区别。 语法层面 synchronized是关键字，源码位于jvm，用cpp实现。 Lock是接口，源码由jdk提供，用Java语言实现。 使用synchronized时，退出同步代码块时，锁会自动释放；而使用Lock时，需要我们手动调用unlock方法释放锁。  功能层面 两者都是悲观锁，都具备基本的互斥、同步、锁重入功能。 L">
+    <meta name="description" content="在之前对单例模式的介绍中，我提到了volatite，在那篇文章中，我们使用volatite是为了保证线程安全，那么volatite是否能够完全保证线程安全呢？ 首先，线程安全需要考虑以下三个方面：  可见性：一个线程对共享变量进行修改，另一个线程能看到最新结果 有序性：一个线程内代码按编写顺序执行 原子性：一个线程内多行代码以一个整体运行，期间不能有其他线程的代码插队  直接说结论，volatit">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JUC之Lock vs synchronized">
-<meta property="og:url" content="https://jlqusername.github.io/2025/03/30/synchronized/index.html">
+<meta property="og:title" content="JUC之volatite关键字">
+<meta property="og:url" content="https://jlqusername.github.io/2025/04/08/JUC%E4%B9%8Bvolatite%E5%85%B3%E9%94%AE%E5%AD%97/index.html">
 <meta property="og:site_name" content="换功臣的个人博客网站">
-<meta property="og:description" content="Lock和synchronized都能实现锁的功能，但是两者之间有着区别。 语法层面 synchronized是关键字，源码位于jvm，用cpp实现。 Lock是接口，源码由jdk提供，用Java语言实现。 使用synchronized时，退出同步代码块时，锁会自动释放；而使用Lock时，需要我们手动调用unlock方法释放锁。  功能层面 两者都是悲观锁，都具备基本的互斥、同步、锁重入功能。 L">
+<meta property="og:description" content="在之前对单例模式的介绍中，我提到了volatite，在那篇文章中，我们使用volatite是为了保证线程安全，那么volatite是否能够完全保证线程安全呢？ 首先，线程安全需要考虑以下三个方面：  可见性：一个线程对共享变量进行修改，另一个线程能看到最新结果 有序性：一个线程内代码按编写顺序执行 原子性：一个线程内多行代码以一个整体运行，期间不能有其他线程的代码插队  直接说结论，volatit">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-03-29T20:39:40.633Z">
-<meta property="article:modified_time" content="2025-03-29T20:41:27.136Z">
+<meta property="article:published_time" content="2025-04-08T06:47:06.560Z">
+<meta property="article:modified_time" content="2025-04-08T06:48:27.427Z">
 <meta property="article:author" content="B907">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="JUC">
@@ -37,7 +37,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>JUC之Lock vs synchronized - 换功臣的个人博客网站</title>
+  <title>JUC之volatite关键字 - 换功臣的个人博客网站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +203,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="JUC之Lock vs synchronized"></span>
+            <span id="subtitle" data-typed-text="JUC之volatite关键字"></span>
           
         </div>
 
@@ -219,8 +219,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-03-30 04:39" pubdate>
-          2025年3月30日 凌晨
+        <time datetime="2025-04-08 14:47" pubdate>
+          2025年4月8日 下午
         </time>
       </span>
     
@@ -231,7 +231,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          517 字
+          807 字
         
       </span>
     
@@ -242,7 +242,7 @@
         
         
         
-          5 分钟
+          7 分钟
         
       </span>
     
@@ -288,32 +288,39 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">JUC之Lock vs synchronized</h1>
+            <h1 id="seo-header">JUC之volatite关键字</h1>
             
             
               <div class="markdown-body">
                 
-                <p>Lock和synchronized都能实现锁的功能，但是两者之间有着区别。</p>
-<h2 id="语法层面"><a href="#语法层面" class="headerlink" title="语法层面"></a>语法层面</h2><ul>
-<li><strong>synchronized是关键字</strong>，源码位于jvm，用cpp实现。</li>
-<li><strong>Lock是接口</strong>，源码由jdk提供，用Java语言实现。</li>
-<li><strong>使用synchronized时，退出同步代码块时，锁会自动释放；而使用Lock时，需要我们手动调用unlock方法释放锁。</strong></li>
-</ul>
-<h2 id="功能层面"><a href="#功能层面" class="headerlink" title="功能层面"></a>功能层面</h2><ul>
-<li><strong>两者都是悲观锁，都具备基本的互斥、同步、锁重入功能。</strong></li>
-<li><strong>Lock提供了许多synchronized所不具备的功能</strong>，比如获取等待状态、公平锁、可打断、可超时、多条件变量。<ul>
-<li>Lock有相应的方法来获取那些线程被阻塞或等待。</li>
-<li>Lock支持公平锁和非公平锁，synchronized只支持非公平锁。公平锁的意思是，争抢锁失败的线程在下次争抢锁时是按照先来先得的、不允许插队的，反之则为非公平锁。（但其实公平锁的吞吐量并不如非公平锁高）</li>
-<li>这里可打断和可超时的意思是指，当一个线程想要获取一个锁的时候，如果锁已经被另一个线程占有了，如果我们使用的是synchronized，那么这个线程就只能一直等待同步代码块执行完毕，同步代码块中间不能被打断，等待锁的过程中没有超时时限；对于Lock锁，提供了对应的方法，比如一段时间没等到锁，就不要等下去了。</li>
-<li>Lock还支持多组条件变量且可以有多个等待队列；而synchronized只能支持一组条件变量，只能有一个等待队列</li>
-</ul>
-</li>
-<li><strong>Lock有适合不同场景的实现</strong>，比如ReentrantLock（可重入锁）、ReentrantTReadWriteLock（可重入读写锁，更适合读多写少的场景）。</li>
-</ul>
-<h2 id="性能层面"><a href="#性能层面" class="headerlink" title="性能层面"></a>性能层面</h2><ul>
-<li><strong>在没有竞争或竞争很少的时候，synchronized</strong>做了很多优化，如偏向锁、轻量级锁等，<strong>性能不错</strong>。</li>
-<li><strong>在竞争激烈的情况下，Lock的实现通常会提供更好的性能。</strong></li>
-</ul>
+                <p>在之前对单例模式的介绍中，我提到了<code>volatite</code>，在那篇文章中，我们使用<code>volatite</code>是为了保证线程安全，那么<code>volatite</code>是否能够完全保证线程安全呢？</p>
+<p>首先，线程安全需要考虑以下三个方面：</p>
+<ol>
+<li>可见性：一个线程对共享变量进行修改，另一个线程能看到最新结果</li>
+<li>有序性：一个线程内代码按编写顺序执行</li>
+<li>原子性：一个线程内多行代码以一个整体运行，期间不能有其他线程的代码插队</li>
+</ol>
+<p>直接说结论，<code>volatite</code>可以保证共享变量的可见性和有序性，但是不能保证原子性。</p>
+<h2 id="为什么不能保证原子性？"><a href="#为什么不能保证原子性？" class="headerlink" title="为什么不能保证原子性？"></a>为什么不能保证原子性？</h2><p>举个例子，对<code>volatite</code>修饰的变量进行加或减操作时，会进行四步操作：</p>
+<ol>
+<li>取出该变量的值</li>
+<li>取出要增加的数</li>
+<li>把两者相加（减），从而得到和（差）</li>
+<li>把和（差）赋值给该变量</li>
+</ol>
+<p>对变量用<code>volatite</code>修饰，并不能保证该变量在执行加或者减操作时，并不能保证四个步骤是一次性连着完成的。这就无法保证原子性了。</p>
+<h2 id="volatite保证可见性的原理"><a href="#volatite保证可见性的原理" class="headerlink" title="volatite保证可见性的原理"></a>volatite保证可见性的原理</h2><p>当我们没有选择<code>-Xint</code>选项时，JIT可能会对我们的代码进行优化。如果JIT发现我们长时间特别多次地读取一个变量的值都一样，就会“帮助”我们优化这段代码，在这之后，我们对这个值进行修改的时候，我们的代码就不一定能见到值的修改，因为JIT以及优化了这段代码，这个变量在这段代码的机器码中可能已经是一个定值了。这就无法保证可见性了。</p>
+<p>而选择<code>-Xint</code>，则是在告诉虚拟机，我只想用解释器，而不使用JIT优化，从而避免了这个问题。</p>
+<p>但是选择<code>-Xint</code>有个很大的缺点是，这意味着整个代码都没有选用JIT优化，从而严重降低了代码的执行效率。</p>
+<p>这个时候，使用<code>volatite</code>关键字修饰变量，就可以很好地解决这个问题：这意味着告诉虚拟机，针对这个变量，不进行JIT优化，这就保证了可见性，也保证了效率。</p>
+<h2 id="volatite保证有序性的原理"><a href="#volatite保证有序性的原理" class="headerlink" title="volatite保证有序性的原理"></a>volatite保证有序性的原理</h2><p><code>volatite</code>是使用内存屏障保证有序性的。使用内存屏障后，我们可以保证对“写操作”，“对修饰的变量的写操作”一定晚于“原代码中早于‘对修饰的变量的写操作’的写操作”；对“读操作”，“对修饰变量的读操作”一定早于“源代码中晚于’对修饰变量的读操作‘的读操作”。看起来好像有点绕口，我们用代码举个例子：</p>
+<p>假设我们对c变量用<code>volatite</code>关键字进行修饰，而a和b两个变量则没有：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">a = <span class="hljs-number">1</span>;<br>b = <span class="hljs-number">2</span>;<br>c = <span class="hljs-number">3</span>;<br></code></pre></td></tr></table></figure>
+
+<p>不管<code>a = 1</code>和<code>b = 2</code>的执行顺序怎么样，<code>c = 3</code>一定在两者之后执行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">d = c;<br>e = b;<br>f = a;<br></code></pre></td></tr></table></figure>
+
+<p>不管<code>e = b</code>和<code>f = a</code>的执行顺序怎么样，<code>d = c</code>一定在两者之前执行。</p>
 
                 
               </div>
@@ -361,8 +368,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>JUC之Lock vs synchronized</div>
-      <div>https://jlqusername.github.io/2025/03/30/synchronized/</div>
+      <div>JUC之volatite关键字</div>
+      <div>https://jlqusername.github.io/2025/04/08/JUC之volatite关键字/</div>
     </div>
     <div class="license-meta">
       
@@ -374,7 +381,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年3月30日</div>
+          <div>2025年4月8日</div>
         </div>
       
       
@@ -406,9 +413,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/04/08/JUC%E4%B9%8Bvolatite%E5%85%B3%E9%94%AE%E5%AD%97/" title="JUC之volatite关键字">
+                      <a href="/2025/04/08/Java%E4%B8%AD%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/" title="Java中的悲观锁和乐观锁">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">JUC之volatite关键字</span>
+                        <span class="hidden-mobile">Java中的悲观锁和乐观锁</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -416,8 +423,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/03/30/wait/" title="JUC之sleep vs wait">
-                        <span class="hidden-mobile">JUC之sleep vs wait</span>
+                      <a href="/2025/03/30/synchronized/" title="JUC之Lock vs synchronized">
+                        <span class="hidden-mobile">JUC之Lock vs synchronized</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

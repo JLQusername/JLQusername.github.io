@@ -4,6 +4,60 @@
   
   
   <entry>
+    <title>Java中的悲观锁和乐观锁</title>
+    <link href="/2025/04/08/Java%E4%B8%AD%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/"/>
+    <url>/2025/04/08/Java%E4%B8%AD%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/</url>
+    
+    <content type="html"><![CDATA[<h2 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h2><p>悲观锁的代表是<code>syschronized</code>和<code>Lock</code>锁：</p><ol><li>其核心思想是：“线程只有占有了锁，才能去操作共享变量，每次只有一个线程站所成功，获取锁失败的线程，都得停下来等待”</li><li>线程从运行到阻塞，再从阻塞到唤醒，涉及线程上下文切换，如果频繁发生，影响性能</li><li>实际上，线程在获取<code>syschronized</code>和<code>Lock</code>锁时，如果锁已被占用，都会做几次重试操作，减少阻塞机会</li></ol><h2 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h2><p>乐观锁的代表是<code>AtomicInteger</code>，使用cas来保证原子性：</p><ol><li>其核心思想是：“无需加锁，每次只有一个线程能成功修改共享变量，其他失败的线程不需要停止，不断重试直至成功”</li><li>由于线程一直运行，不需要阻塞，因此不涉及线程上下文切换</li><li>需要多核cpu支持，且线程锁不应超过cpu核数</li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Java</tag>
+      
+      <tag>JUC</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>JUC之volatite关键字</title>
+    <link href="/2025/04/08/JUC%E4%B9%8Bvolatite%E5%85%B3%E9%94%AE%E5%AD%97/"/>
+    <url>/2025/04/08/JUC%E4%B9%8Bvolatite%E5%85%B3%E9%94%AE%E5%AD%97/</url>
+    
+    <content type="html"><![CDATA[<p>在之前对单例模式的介绍中，我提到了<code>volatite</code>，在那篇文章中，我们使用<code>volatite</code>是为了保证线程安全，那么<code>volatite</code>是否能够完全保证线程安全呢？</p><p>首先，线程安全需要考虑以下三个方面：</p><ol><li>可见性：一个线程对共享变量进行修改，另一个线程能看到最新结果</li><li>有序性：一个线程内代码按编写顺序执行</li><li>原子性：一个线程内多行代码以一个整体运行，期间不能有其他线程的代码插队</li></ol><p>直接说结论，<code>volatite</code>可以保证共享变量的可见性和有序性，但是不能保证原子性。</p><h2 id="为什么不能保证原子性？"><a href="#为什么不能保证原子性？" class="headerlink" title="为什么不能保证原子性？"></a>为什么不能保证原子性？</h2><p>举个例子，对<code>volatite</code>修饰的变量进行加或减操作时，会进行四步操作：</p><ol><li>取出该变量的值</li><li>取出要增加的数</li><li>把两者相加（减），从而得到和（差）</li><li>把和（差）赋值给该变量</li></ol><p>对变量用<code>volatite</code>修饰，并不能保证该变量在执行加或者减操作时，并不能保证四个步骤是一次性连着完成的。这就无法保证原子性了。</p><h2 id="volatite保证可见性的原理"><a href="#volatite保证可见性的原理" class="headerlink" title="volatite保证可见性的原理"></a>volatite保证可见性的原理</h2><p>当我们没有选择<code>-Xint</code>选项时，JIT可能会对我们的代码进行优化。如果JIT发现我们长时间特别多次地读取一个变量的值都一样，就会“帮助”我们优化这段代码，在这之后，我们对这个值进行修改的时候，我们的代码就不一定能见到值的修改，因为JIT以及优化了这段代码，这个变量在这段代码的机器码中可能已经是一个定值了。这就无法保证可见性了。</p><p>而选择<code>-Xint</code>，则是在告诉虚拟机，我只想用解释器，而不使用JIT优化，从而避免了这个问题。</p><p>但是选择<code>-Xint</code>有个很大的缺点是，这意味着整个代码都没有选用JIT优化，从而严重降低了代码的执行效率。</p><p>这个时候，使用<code>volatite</code>关键字修饰变量，就可以很好地解决这个问题：这意味着告诉虚拟机，针对这个变量，不进行JIT优化，这就保证了可见性，也保证了效率。</p><h2 id="volatite保证有序性的原理"><a href="#volatite保证有序性的原理" class="headerlink" title="volatite保证有序性的原理"></a>volatite保证有序性的原理</h2><p><code>volatite</code>是使用内存屏障保证有序性的。使用内存屏障后，我们可以保证对“写操作”，“对修饰的变量的写操作”一定晚于“原代码中早于‘对修饰的变量的写操作’的写操作”；对“读操作”，“对修饰变量的读操作”一定早于“源代码中晚于’对修饰变量的读操作‘的读操作”。看起来好像有点绕口，我们用代码举个例子：</p><p>假设我们对c变量用<code>volatite</code>关键字进行修饰，而a和b两个变量则没有：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">a = <span class="hljs-number">1</span>;<br>b = <span class="hljs-number">2</span>;<br>c = <span class="hljs-number">3</span>;<br></code></pre></td></tr></table></figure><p>不管<code>a = 1</code>和<code>b = 2</code>的执行顺序怎么样，<code>c = 3</code>一定在两者之后执行。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">d = c;<br>e = b;<br>f = a;<br></code></pre></td></tr></table></figure><p>不管<code>e = b</code>和<code>f = a</code>的执行顺序怎么样，<code>d = c</code>一定在两者之前执行。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Java</tag>
+      
+      <tag>JUC</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>JUC之Lock vs synchronized</title>
     <link href="/2025/03/30/synchronized/"/>
     <url>/2025/03/30/synchronized/</url>

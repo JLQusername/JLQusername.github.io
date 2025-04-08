@@ -19,15 +19,15 @@
   <meta name="author" content="B907">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Lock和synchronized都能实现锁的功能，但是两者之间有着区别。 语法层面 synchronized是关键字，源码位于jvm，用cpp实现。 Lock是接口，源码由jdk提供，用Java语言实现。 使用synchronized时，退出同步代码块时，锁会自动释放；而使用Lock时，需要我们手动调用unlock方法释放锁。  功能层面 两者都是悲观锁，都具备基本的互斥、同步、锁重入功能。 L">
+    <meta name="description" content="悲观锁悲观锁的代表是syschronized和Lock锁：  其核心思想是：“线程只有占有了锁，才能去操作共享变量，每次只有一个线程站所成功，获取锁失败的线程，都得停下来等待” 线程从运行到阻塞，再从阻塞到唤醒，涉及线程上下文切换，如果频繁发生，影响性能 实际上，线程在获取syschronized和Lock锁时，如果锁已被占用，都会做几次重试操作，减少阻塞机会  乐观锁乐观锁的代表是AtomicI">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JUC之Lock vs synchronized">
-<meta property="og:url" content="https://jlqusername.github.io/2025/03/30/synchronized/index.html">
+<meta property="og:title" content="Java中的悲观锁和乐观锁">
+<meta property="og:url" content="https://jlqusername.github.io/2025/04/08/Java%E4%B8%AD%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/index.html">
 <meta property="og:site_name" content="换功臣的个人博客网站">
-<meta property="og:description" content="Lock和synchronized都能实现锁的功能，但是两者之间有着区别。 语法层面 synchronized是关键字，源码位于jvm，用cpp实现。 Lock是接口，源码由jdk提供，用Java语言实现。 使用synchronized时，退出同步代码块时，锁会自动释放；而使用Lock时，需要我们手动调用unlock方法释放锁。  功能层面 两者都是悲观锁，都具备基本的互斥、同步、锁重入功能。 L">
+<meta property="og:description" content="悲观锁悲观锁的代表是syschronized和Lock锁：  其核心思想是：“线程只有占有了锁，才能去操作共享变量，每次只有一个线程站所成功，获取锁失败的线程，都得停下来等待” 线程从运行到阻塞，再从阻塞到唤醒，涉及线程上下文切换，如果频繁发生，影响性能 实际上，线程在获取syschronized和Lock锁时，如果锁已被占用，都会做几次重试操作，减少阻塞机会  乐观锁乐观锁的代表是AtomicI">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-03-29T20:39:40.633Z">
-<meta property="article:modified_time" content="2025-03-29T20:41:27.136Z">
+<meta property="article:published_time" content="2025-04-08T06:47:18.105Z">
+<meta property="article:modified_time" content="2025-04-08T06:48:11.723Z">
 <meta property="article:author" content="B907">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="JUC">
@@ -37,7 +37,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>JUC之Lock vs synchronized - 换功臣的个人博客网站</title>
+  <title>Java中的悲观锁和乐观锁 - 换功臣的个人博客网站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +203,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="JUC之Lock vs synchronized"></span>
+            <span id="subtitle" data-typed-text="Java中的悲观锁和乐观锁"></span>
           
         </div>
 
@@ -219,8 +219,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-03-30 04:39" pubdate>
-          2025年3月30日 凌晨
+        <time datetime="2025-04-08 14:47" pubdate>
+          2025年4月8日 下午
         </time>
       </span>
     
@@ -231,7 +231,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          517 字
+          241 字
         
       </span>
     
@@ -242,7 +242,7 @@
         
         
         
-          5 分钟
+          3 分钟
         
       </span>
     
@@ -288,32 +288,23 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">JUC之Lock vs synchronized</h1>
+            <h1 id="seo-header">Java中的悲观锁和乐观锁</h1>
             
             
               <div class="markdown-body">
                 
-                <p>Lock和synchronized都能实现锁的功能，但是两者之间有着区别。</p>
-<h2 id="语法层面"><a href="#语法层面" class="headerlink" title="语法层面"></a>语法层面</h2><ul>
-<li><strong>synchronized是关键字</strong>，源码位于jvm，用cpp实现。</li>
-<li><strong>Lock是接口</strong>，源码由jdk提供，用Java语言实现。</li>
-<li><strong>使用synchronized时，退出同步代码块时，锁会自动释放；而使用Lock时，需要我们手动调用unlock方法释放锁。</strong></li>
-</ul>
-<h2 id="功能层面"><a href="#功能层面" class="headerlink" title="功能层面"></a>功能层面</h2><ul>
-<li><strong>两者都是悲观锁，都具备基本的互斥、同步、锁重入功能。</strong></li>
-<li><strong>Lock提供了许多synchronized所不具备的功能</strong>，比如获取等待状态、公平锁、可打断、可超时、多条件变量。<ul>
-<li>Lock有相应的方法来获取那些线程被阻塞或等待。</li>
-<li>Lock支持公平锁和非公平锁，synchronized只支持非公平锁。公平锁的意思是，争抢锁失败的线程在下次争抢锁时是按照先来先得的、不允许插队的，反之则为非公平锁。（但其实公平锁的吞吐量并不如非公平锁高）</li>
-<li>这里可打断和可超时的意思是指，当一个线程想要获取一个锁的时候，如果锁已经被另一个线程占有了，如果我们使用的是synchronized，那么这个线程就只能一直等待同步代码块执行完毕，同步代码块中间不能被打断，等待锁的过程中没有超时时限；对于Lock锁，提供了对应的方法，比如一段时间没等到锁，就不要等下去了。</li>
-<li>Lock还支持多组条件变量且可以有多个等待队列；而synchronized只能支持一组条件变量，只能有一个等待队列</li>
-</ul>
-</li>
-<li><strong>Lock有适合不同场景的实现</strong>，比如ReentrantLock（可重入锁）、ReentrantTReadWriteLock（可重入读写锁，更适合读多写少的场景）。</li>
-</ul>
-<h2 id="性能层面"><a href="#性能层面" class="headerlink" title="性能层面"></a>性能层面</h2><ul>
-<li><strong>在没有竞争或竞争很少的时候，synchronized</strong>做了很多优化，如偏向锁、轻量级锁等，<strong>性能不错</strong>。</li>
-<li><strong>在竞争激烈的情况下，Lock的实现通常会提供更好的性能。</strong></li>
-</ul>
+                <h2 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h2><p>悲观锁的代表是<code>syschronized</code>和<code>Lock</code>锁：</p>
+<ol>
+<li>其核心思想是：“线程只有占有了锁，才能去操作共享变量，每次只有一个线程站所成功，获取锁失败的线程，都得停下来等待”</li>
+<li>线程从运行到阻塞，再从阻塞到唤醒，涉及线程上下文切换，如果频繁发生，影响性能</li>
+<li>实际上，线程在获取<code>syschronized</code>和<code>Lock</code>锁时，如果锁已被占用，都会做几次重试操作，减少阻塞机会</li>
+</ol>
+<h2 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h2><p>乐观锁的代表是<code>AtomicInteger</code>，使用cas来保证原子性：</p>
+<ol>
+<li>其核心思想是：“无需加锁，每次只有一个线程能成功修改共享变量，其他失败的线程不需要停止，不断重试直至成功”</li>
+<li>由于线程一直运行，不需要阻塞，因此不涉及线程上下文切换</li>
+<li>需要多核cpu支持，且线程锁不应超过cpu核数</li>
+</ol>
 
                 
               </div>
@@ -361,8 +352,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>JUC之Lock vs synchronized</div>
-      <div>https://jlqusername.github.io/2025/03/30/synchronized/</div>
+      <div>Java中的悲观锁和乐观锁</div>
+      <div>https://jlqusername.github.io/2025/04/08/Java中的悲观锁和乐观锁/</div>
     </div>
     <div class="license-meta">
       
@@ -374,7 +365,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年3月30日</div>
+          <div>2025年4月8日</div>
         </div>
       
       
@@ -406,18 +397,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/04/08/JUC%E4%B9%8Bvolatite%E5%85%B3%E9%94%AE%E5%AD%97/" title="JUC之volatite关键字">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">JUC之volatite关键字</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/03/30/wait/" title="JUC之sleep vs wait">
-                        <span class="hidden-mobile">JUC之sleep vs wait</span>
+                      <a href="/2025/04/08/JUC%E4%B9%8Bvolatite%E5%85%B3%E9%94%AE%E5%AD%97/" title="JUC之volatite关键字">
+                        <span class="hidden-mobile">JUC之volatite关键字</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
