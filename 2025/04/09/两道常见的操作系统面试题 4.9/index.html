@@ -19,25 +19,24 @@
   <meta name="author" content="B907">
   <meta name="keywords" content="">
   
-    <meta name="description" content="悲观锁悲观锁的代表是syschronized和Lock锁：  其核心思想是：“线程只有占有了锁，才能去操作共享变量，每次只有一个线程站所成功，获取锁失败的线程，都得停下来等待” 线程从运行到阻塞，再从阻塞到唤醒，涉及线程上下文切换，如果频繁发生，影响性能 实际上，线程在获取syschronized和Lock锁时，如果锁已被占用，都会做几次重试操作，减少阻塞机会  乐观锁乐观锁的代表是AtomicI">
+    <meta name="description" content="进程和线程的区别是什么？ 本质方面，进程是操作系统进行资源分配的基本单位；线程是任务调度和执行的基本单位 在切换开销方面，每个进程都有独立的代码和数据空间（程序上下文），进程之间的切换会有较大的开销；线程可以看做轻量级的进程，一个进程中的线程之间共享代码和堆空间，同一进程中的线程的切换，只需要切换运行栈和程序计数器，开销较小‘ 在稳定性方面，如果一个进程崩溃了，往往不会影响其他进程及其兄弟进程和父">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java中的悲观锁和乐观锁">
-<meta property="og:url" content="https://jlqusername.github.io/2025/04/08/Java%E4%B8%AD%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/index.html">
+<meta property="og:title" content="两道常见的操作系统面试题 4.9">
+<meta property="og:url" content="https://jlqusername.github.io/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/index.html">
 <meta property="og:site_name" content="换功臣的个人博客网站">
-<meta property="og:description" content="悲观锁悲观锁的代表是syschronized和Lock锁：  其核心思想是：“线程只有占有了锁，才能去操作共享变量，每次只有一个线程站所成功，获取锁失败的线程，都得停下来等待” 线程从运行到阻塞，再从阻塞到唤醒，涉及线程上下文切换，如果频繁发生，影响性能 实际上，线程在获取syschronized和Lock锁时，如果锁已被占用，都会做几次重试操作，减少阻塞机会  乐观锁乐观锁的代表是AtomicI">
+<meta property="og:description" content="进程和线程的区别是什么？ 本质方面，进程是操作系统进行资源分配的基本单位；线程是任务调度和执行的基本单位 在切换开销方面，每个进程都有独立的代码和数据空间（程序上下文），进程之间的切换会有较大的开销；线程可以看做轻量级的进程，一个进程中的线程之间共享代码和堆空间，同一进程中的线程的切换，只需要切换运行栈和程序计数器，开销较小‘ 在稳定性方面，如果一个进程崩溃了，往往不会影响其他进程及其兄弟进程和父">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-04-08T06:47:18.105Z">
-<meta property="article:modified_time" content="2025-04-08T06:48:11.723Z">
+<meta property="article:published_time" content="2025-04-09T02:26:03.484Z">
+<meta property="article:modified_time" content="2025-04-09T02:28:59.708Z">
 <meta property="article:author" content="B907">
-<meta property="article:tag" content="Java">
-<meta property="article:tag" content="JUC">
+<meta property="article:tag" content="操作系统">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Java中的悲观锁和乐观锁 - 换功臣的个人博客网站</title>
+  <title>两道常见的操作系统面试题 4.9 - 换功臣的个人博客网站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Java中的悲观锁和乐观锁"></span>
+            <span id="subtitle" data-typed-text="两道常见的操作系统面试题 4.9"></span>
           
         </div>
 
@@ -219,8 +218,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-04-08 14:47" pubdate>
-          2025年4月8日 下午
+        <time datetime="2025-04-09 10:26" pubdate>
+          2025年4月9日 上午
         </time>
       </span>
     
@@ -231,7 +230,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          241 字
+          767 字
         
       </span>
     
@@ -242,7 +241,7 @@
         
         
         
-          3 分钟
+          7 分钟
         
       </span>
     
@@ -288,23 +287,32 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Java中的悲观锁和乐观锁</h1>
+            <h1 id="seo-header">两道常见的操作系统面试题 4.9</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h2><p>悲观锁的代表是<code>syschronized</code>和<code>Lock</code>锁：</p>
-<ol>
-<li>其核心思想是：“线程只有占有了锁，才能去操作共享变量，每次只有一个线程站所成功，获取锁失败的线程，都得停下来等待”</li>
-<li>线程从运行到阻塞，再从阻塞到唤醒，涉及线程上下文切换，如果频繁发生，影响性能</li>
-<li>实际上，线程在获取<code>syschronized</code>和<code>Lock</code>锁时，如果锁已被占用，都会做几次重试操作，减少阻塞机会</li>
-</ol>
-<h2 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h2><p>乐观锁的代表是<code>AtomicInteger</code>，使用cas来保证原子性：</p>
-<ol>
-<li>其核心思想是：“无需加锁，每次只有一个线程能成功修改共享变量，其他失败的线程不需要停止，不断重试直至成功”</li>
-<li>由于线程一直运行，不需要阻塞，因此不涉及线程上下文切换</li>
-<li>需要多核cpu支持，且线程锁不应超过cpu核数</li>
-</ol>
+                <h2 id="进程和线程的区别是什么？"><a href="#进程和线程的区别是什么？" class="headerlink" title="进程和线程的区别是什么？"></a>进程和线程的区别是什么？</h2><ul>
+<li><strong>本质方面</strong>，进程是操作系统进行资源分配的基本单位；线程是任务调度和执行的基本单位</li>
+<li><strong>在切换开销方面</strong>，每个进程都有独立的代码和数据空间（程序上下文），进程之间的切换会有较大的开销；线程可以看做轻量级的进程，一个进程中的线程之间共享代码和堆空间，同一进程中的线程的切换，只需要切换运行栈和程序计数器，开销较小‘</li>
+<li><strong>在稳定性方面</strong>，如果一个进程崩溃了，往往不会影响其他进程及其兄弟进程和父进程；如果一个线程崩溃了，会影响到所在的整个进程</li>
+<li><strong>内存分配方面</strong>：系统在运行的时候会为每个进程分配不同的内存空间；对线程而言，除了CPU外，系统不会为其分配内存，线程所使用的资源来自其所属进程的资源，同一进程中的线程之间只能共享资源</li>
+<li><strong>包含关系</strong>：一个进程中可以包含多个线程；一个线程会属于一个进程</li>
+</ul>
+<h2 id="进程间的通信方式（IPC）有哪些？"><a href="#进程间的通信方式（IPC）有哪些？" class="headerlink" title="进程间的通信方式（IPC）有哪些？"></a>进程间的通信方式（IPC）有哪些？</h2><ul>
+<li><strong>管道</strong>：包含匿名管道和有名管道。匿名管道仅用于父子进程和兄弟进程之间的通信，有名管道可以作为文件存在，可以让无亲缘关系的进程之间通信。特点是简单但单向，适合小数据流，效率较低。</li>
+<li><strong>消息队列</strong>：内核维护的消息链表，进程通过唯一标识符访问。特点是支持不同类型消息（按优先级或类型读取），但涉及内核态切换，性能一般。</li>
+<li><strong>共享内存</strong>：多个进程映射同一块物理内存，直接读写数据。特点是速度最快（无需复制数据），但需同步机制（如信号量）避免冲突。</li>
+<li><strong>信号量</strong>：用于进程同步的计数器，通过 P()等待 和 V()释放操作控制资源访问。特点是解决竞态条件，本身不传递数据，需配合其他IPC使用。</li>
+<li><strong>信号</strong>：异步通知机制（如 <code>SIGINT</code> 终止进程），通过 <code>kill</code> 命令或系统调用发送。特点是轻量级，仅传递信号编号，不能传输复杂数据。</li>
+<li><strong>套间字</strong>：支持跨网络通信（如TCP&#x2F;UDP），也可用于本地进程。特点是通用性强，但开销较大，适用分布式系统。</li>
+<li><strong>内存映射文件</strong>：文件映射到进程内存空间，多个进程共享同一文件。特点是适合大文件处理，类似共享内存但依赖文件系统。</li>
+</ul>
+<h3 id="选择依据"><a href="#选择依据" class="headerlink" title="选择依据"></a>选择依据</h3><ul>
+<li><strong>速度</strong>：共享内存 &gt; 管道 &gt; 消息队列 &gt; 套接字。</li>
+<li><strong>复杂度</strong>：套接字 &gt; 共享内存（需同步） &gt; 管道。</li>
+<li><strong>场景</strong>：简单数据流用管道；高性能用共享内存；跨机器用套接字。</li>
+</ul>
 
                 
               </div>
@@ -338,9 +346,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Java/" class="print-no-link">#Java</a>
-      
-        <a href="/tags/JUC/" class="print-no-link">#JUC</a>
+        <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="print-no-link">#操作系统</a>
       
     </div>
   
@@ -352,8 +358,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Java中的悲观锁和乐观锁</div>
-      <div>https://jlqusername.github.io/2025/04/08/Java中的悲观锁和乐观锁/</div>
+      <div>两道常见的操作系统面试题 4.9</div>
+      <div>https://jlqusername.github.io/2025/04/09/两道常见的操作系统面试题 4.9/</div>
     </div>
     <div class="license-meta">
       
@@ -365,7 +371,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年4月8日</div>
+          <div>2025年4月9日</div>
         </div>
       
       
@@ -397,18 +403,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/" title="两道常见的计算机网络面试题 4.9">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">两道常见的计算机网络面试题 4.9</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/04/08/JUC%E4%B9%8Bvolatite%E5%85%B3%E9%94%AE%E5%AD%97/" title="JUC之volatite关键字">
-                        <span class="hidden-mobile">JUC之volatite关键字</span>
+                      <a href="/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/" title="两道常见的计算机网络面试题 4.9">
+                        <span class="hidden-mobile">两道常见的计算机网络面试题 4.9</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

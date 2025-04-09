@@ -19,25 +19,24 @@
   <meta name="author" content="B907">
   <meta name="keywords" content="">
   
-    <meta name="description" content="悲观锁悲观锁的代表是syschronized和Lock锁：  其核心思想是：“线程只有占有了锁，才能去操作共享变量，每次只有一个线程站所成功，获取锁失败的线程，都得停下来等待” 线程从运行到阻塞，再从阻塞到唤醒，涉及线程上下文切换，如果频繁发生，影响性能 实际上，线程在获取syschronized和Lock锁时，如果锁已被占用，都会做几次重试操作，减少阻塞机会  乐观锁乐观锁的代表是AtomicI">
+    <meta name="description" content="HTTP和HTTPS的区别HTTP是超文本传输协议，是互联网上应用最为广泛的一种网络通信协议，基于TCP或UDP（HTTP3），用来规范超文本（网络上的各种信息）的传输。默认端口号为80。 HTTPS是超文本传输安全协议，是HTTP的加强版，可以认为是在HTTP的基础上，额外使用 SSL&#x2F;TLS 协议用作加密和安全认证。默认端口号为443。 主要区别 HTTP的连接是简单无状态的，HTT">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java中的悲观锁和乐观锁">
-<meta property="og:url" content="https://jlqusername.github.io/2025/04/08/Java%E4%B8%AD%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/index.html">
+<meta property="og:title" content="两道常见的计算机网络面试题 4.9">
+<meta property="og:url" content="https://jlqusername.github.io/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/index.html">
 <meta property="og:site_name" content="换功臣的个人博客网站">
-<meta property="og:description" content="悲观锁悲观锁的代表是syschronized和Lock锁：  其核心思想是：“线程只有占有了锁，才能去操作共享变量，每次只有一个线程站所成功，获取锁失败的线程，都得停下来等待” 线程从运行到阻塞，再从阻塞到唤醒，涉及线程上下文切换，如果频繁发生，影响性能 实际上，线程在获取syschronized和Lock锁时，如果锁已被占用，都会做几次重试操作，减少阻塞机会  乐观锁乐观锁的代表是AtomicI">
+<meta property="og:description" content="HTTP和HTTPS的区别HTTP是超文本传输协议，是互联网上应用最为广泛的一种网络通信协议，基于TCP或UDP（HTTP3），用来规范超文本（网络上的各种信息）的传输。默认端口号为80。 HTTPS是超文本传输安全协议，是HTTP的加强版，可以认为是在HTTP的基础上，额外使用 SSL&#x2F;TLS 协议用作加密和安全认证。默认端口号为443。 主要区别 HTTP的连接是简单无状态的，HTT">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-04-08T06:47:18.105Z">
-<meta property="article:modified_time" content="2025-04-08T06:48:11.723Z">
+<meta property="article:published_time" content="2025-04-09T02:25:41.953Z">
+<meta property="article:modified_time" content="2025-04-09T02:27:49.155Z">
 <meta property="article:author" content="B907">
-<meta property="article:tag" content="Java">
-<meta property="article:tag" content="JUC">
+<meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Java中的悲观锁和乐观锁 - 换功臣的个人博客网站</title>
+  <title>两道常见的计算机网络面试题 4.9 - 换功臣的个人博客网站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Java中的悲观锁和乐观锁"></span>
+            <span id="subtitle" data-typed-text="两道常见的计算机网络面试题 4.9"></span>
           
         </div>
 
@@ -219,8 +218,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-04-08 14:47" pubdate>
-          2025年4月8日 下午
+        <time datetime="2025-04-09 10:25" pubdate>
+          2025年4月9日 上午
         </time>
       </span>
     
@@ -231,7 +230,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          241 字
+          770 字
         
       </span>
     
@@ -242,7 +241,7 @@
         
         
         
-          3 分钟
+          7 分钟
         
       </span>
     
@@ -288,22 +287,59 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Java中的悲观锁和乐观锁</h1>
+            <h1 id="seo-header">两道常见的计算机网络面试题 4.9</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h2><p>悲观锁的代表是<code>syschronized</code>和<code>Lock</code>锁：</p>
-<ol>
-<li>其核心思想是：“线程只有占有了锁，才能去操作共享变量，每次只有一个线程站所成功，获取锁失败的线程，都得停下来等待”</li>
-<li>线程从运行到阻塞，再从阻塞到唤醒，涉及线程上下文切换，如果频繁发生，影响性能</li>
-<li>实际上，线程在获取<code>syschronized</code>和<code>Lock</code>锁时，如果锁已被占用，都会做几次重试操作，减少阻塞机会</li>
+                <h2 id="HTTP和HTTPS的区别"><a href="#HTTP和HTTPS的区别" class="headerlink" title="HTTP和HTTPS的区别"></a>HTTP和HTTPS的区别</h2><p>HTTP是超文本传输协议，是互联网上应用最为广泛的一种网络通信协议，基于TCP或UDP（HTTP3），用来规范超文本（网络上的各种信息）的传输。默认端口号为80。</p>
+<p>HTTPS是超文本传输安全协议，是HTTP的加强版，可以认为是在HTTP的基础上，额外使用 SSL&#x2F;TLS 协议用作加密和安全认证。默认端口号为443。</p>
+<h3 id="主要区别"><a href="#主要区别" class="headerlink" title="主要区别"></a>主要区别</h3><ol>
+<li>HTTP的连接是简单无状态的，HTTPS的数据传输是经过证书加密的，安全性更高</li>
+<li>HTTP是免费的，而HTTPS需要申请证书，这往往是收费的</li>
+<li>HTTP默认是80端口，HTTPS默认是443端口。</li>
 </ol>
-<h2 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h2><p>乐观锁的代表是<code>AtomicInteger</code>，使用cas来保证原子性：</p>
-<ol>
-<li>其核心思想是：“无需加锁，每次只有一个线程能成功修改共享变量，其他失败的线程不需要停止，不断重试直至成功”</li>
-<li>由于线程一直运行，不需要阻塞，因此不涉及线程上下文切换</li>
-<li>需要多核cpu支持，且线程锁不应超过cpu核数</li>
+<h3 id="HTTPS的缺点"><a href="#HTTPS的缺点" class="headerlink" title="HTTPS的缺点"></a>HTTPS的缺点</h3><ol>
+<li>HTTPS的握手协议比较费时，从而影响了服务的响应速度以及吞吐量</li>
+<li>HTTPS的证书体系并非完全安全</li>
+<li>HTTPS在面对DDOS攻击时，无法起到防御作用</li>
+<li>证书需要费钱，功能越强大的证书花费越高</li>
+</ol>
+<h2 id="访问网页的全过程"><a href="#访问网页的全过程" class="headerlink" title="访问网页的全过程"></a>访问网页的全过程</h2><ol>
+<li><p>浏览器通过DNS协议，获取域名对应的IP地址</p>
+<ul>
+<li>DNS 是应用层协议，基于 UDP 协议之上，端口为 53 </li>
+<li>IP 协议（网际协议）主要作用是定义数据包的格式、对数据包进行路由和寻址，以便它们可以跨网络传播并到达正确的目的地</li>
+<li>ARP 协议解决的是网络层地址（IP地址）和链路层地址（MAC地址）之间的转换问题。</li>
+</ul>
+</li>
+<li><p>浏览器根据 IP 地址和端口号，向目标服务器发起一个 TCP&#x2F;UDP 连接请求</p>
+<ul>
+<li>TCP（传输控制协议 ）提供面向连接的，可靠的数据传输服务</li>
+<li>UDP（用户数据协议）提供无连接的，尽最大努力的数据传输服务（不保证数据传输的可靠性），简单高效</li>
+</ul>
+</li>
+<li><p>浏览器在 TCP&#x2F;UDP 连接上，向服务器发送一个 HTTP 请求报文，请求获取网页的内容</p>
+<ul>
+<li>HTTP是超文本传输协议，是互联网上应用最为广泛的一种网络通信协议，基于TCP或UDP（HTTP3），用来规范超文本（网络上的各种信息）的传输。默认端口号为80</li>
+</ul>
+</li>
+<li><p>TCP&#x2F;UDP 报文在网络层进行传输，被分组为IP数据包</p>
+<ul>
+<li><p>网络层的功能是转发和路由</p>
+</li>
+<li><p>转发：将分组从路由器的输入端口转移到合适的输出端口</p>
+</li>
+<li><p>路由：确定分组从源到目的经过的路径</p>
+</li>
+</ul>
+</li>
+<li><p>服务器收到 HTTP 请求报文后，处理请求，并返回 HTTP 响应报文给浏览器</p>
+</li>
+<li><p>浏览器收到 HTTP 响应报文后，解析响应体中的 HTML 代码，渲染网页的结构和样式，同时根据 HTML 中的其他资源的 URL（如图片、CSS、JS 等），再次发起 HTTP 请求，获取这些资源的内容，直到网页完全加载显示</p>
+</li>
+<li><p>浏览器在不需要和服务器通信时，可以主动关闭 TCP 连接，或者等待服务器的关闭请求</p>
+</li>
 </ol>
 
                 
@@ -338,9 +374,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Java/" class="print-no-link">#Java</a>
-      
-        <a href="/tags/JUC/" class="print-no-link">#JUC</a>
+        <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="print-no-link">#计算机网络</a>
       
     </div>
   
@@ -352,8 +386,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Java中的悲观锁和乐观锁</div>
-      <div>https://jlqusername.github.io/2025/04/08/Java中的悲观锁和乐观锁/</div>
+      <div>两道常见的计算机网络面试题 4.9</div>
+      <div>https://jlqusername.github.io/2025/04/09/两道常见的计算机网络面试题 4.9/</div>
     </div>
     <div class="license-meta">
       
@@ -365,7 +399,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年4月8日</div>
+          <div>2025年4月9日</div>
         </div>
       
       
@@ -397,9 +431,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/" title="两道常见的计算机网络面试题 4.9">
+                      <a href="/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/" title="两道常见的操作系统面试题 4.9">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">两道常见的计算机网络面试题 4.9</span>
+                        <span class="hidden-mobile">两道常见的操作系统面试题 4.9</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -407,8 +441,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/04/08/JUC%E4%B9%8Bvolatite%E5%85%B3%E9%94%AE%E5%AD%97/" title="JUC之volatite关键字">
-                        <span class="hidden-mobile">JUC之volatite关键字</span>
+                      <a href="/2025/04/08/Java%E4%B8%AD%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/" title="Java中的悲观锁和乐观锁">
+                        <span class="hidden-mobile">Java中的悲观锁和乐观锁</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
