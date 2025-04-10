@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>两道常见的mysql面试题 4.10</title>
+    <link href="/2025/04/10/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84mysql%E9%9D%A2%E8%AF%95%E9%A2%98%204.10/"/>
+    <url>/2025/04/10/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84mysql%E9%9D%A2%E8%AF%95%E9%A2%98%204.10/</url>
+    
+    <content type="html"><![CDATA[<h2 id="事务的4个特性（ACID）"><a href="#事务的4个特性（ACID）" class="headerlink" title="事务的4个特性（ACID）"></a>事务的4个特性（ACID）</h2><ul><li><p><strong>原子性（A）</strong>：事务是最小的执行单位，不可以被分割，动作要么全部完成，要么完全不起作用。</p></li><li><p><strong>一致性（C）</strong>：执行事务前后，数据保持一致。比如转账事务中，不论事务是否成功，转账者和收款人钱的总额是不变的。</p></li><li><p><strong>隔离性（I）</strong>：并发访问数据库时，一个用户的事务不会被其他事务所干扰，各个并发事务之间，数据库是相互独立的。</p></li><li><p><strong>持久性（D）</strong>：一个事务被提交后，它对数据库的影响是持久的，即使数据库发生故障也不应该对其有影响。</p></li></ul><p>事务的原子性、隔离性、持久性是为了保证事务的一致性。</p><h2 id="事务的4种隔离级别"><a href="#事务的4种隔离级别" class="headerlink" title="事务的4种隔离级别"></a>事务的4种隔离级别</h2><p>SQL 标准定义了四个隔离级别：</p><ul><li><strong>READ-UNCOMMITTED（读未提交）</strong>：最低的隔离级别，允许读取尚未提交的数据变更，可能会导致脏读、不可重复读和幻读。</li><li><strong>READ-COMMITTED（读已提交）</strong>：允许读取并发事务已经提交的数据，可以阻止脏读，但是不可重复读和幻读仍有可能发生。</li><li><strong>REPEATABLE-READ（可重复读）</strong>：对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，可以阻止脏读和不可重复读，但幻读仍有可能发生。</li><li>**SERIALIZABLE(串行化)**：最高的隔离级别，完全服从 ACID 的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。</li></ul><p>这里补充脏读、不可重复读和幻读：</p><ul><li><strong>脏读</strong>：读取其他事务尚未提交的数据变更</li><li><strong>不可重复读</strong>：在同一事务中，对非自己修改的数据的两次读取结果不同</li><li><strong>幻读</strong>：在一个事务读取了几行数据，接着另一个并发事务插入了一些数据，在随后的查询中，第一个事务就会发现多了一些原本不存在的记录</li></ul><p>在可重复读的隔离级别下，是可以解决一部分幻读问题的：</p><ul><li>给事务操作的这张表添加表锁或者 <code>Next-key Lock</code></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Mysql</tag>
+      
+      <tag>数据库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>两道常见的操作系统面试题 4.9</title>
     <link href="/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/"/>
     <url>/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/</url>
