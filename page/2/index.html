@@ -229,6 +229,195 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0/" target="_self">
+          JUC之线程池
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0/" target="_self">
+        <div>
+          线程池本质上就是管理一组线程，用来完成提交给线程池的任务。提交任务，可以调用线程池的submit方法，把实现了Runnable和Callable的任务对象，提交给线程池；而线程池就可以创建出线程对象来执行任务。 创建的线程分为两类：核心线程和救急线程。核心线程就是，当线程执行完任务之后，依然要保留到线程池中的线程；而救急线程，则是执行完任务之后，如果没有别的任务了，就不需要保留到线程池中的线程。两
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-03-29 01:51" pubdate>
+              2025-03-29
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Java/">#Java</a>
+            
+              <a href="/tags/JUC/">#JUC</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/" target="_self">
+          JUC之线程状态
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/03/29/JUC%E4%B9%8B%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/" target="_self">
+        <div>
+          线程有哪些状态（六种状态）Java中的线程分为6种状态，分别是NEW（新建）、RUNNABLE（可运行）、TERMINATED（终结）、BLOCKED（阻塞）、WAITING（等待）、TIMED_WAITING（有时限等待）。 当使用new关键字创建了一个线程对象之后，刚刚创建出来的线程对象，就处于新建状态。新建状态下的线程，仅仅是一个Java对象，没有和操作系统底层真正的线程关联起来，这时的线程
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-03-29 01:51" pubdate>
+              2025-03-29
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Java/">#Java</a>
+            
+              <a href="/tags/JUC/">#JUC</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/02/23/Java%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" target="_self">
+          Java单例模式
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/02/23/Java%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" target="_self">
+        <div>
+          方式一：饿汉式介绍所谓饿汉式单例模式，就是在第一次获取单例对象之前（而不是获取时），就创建好了这个对象，比如下图的代码： 123456789101112131415public class Singtelon1 &#123;    private static final Singtelon1 INSTANCE = new Singtelon1();        private Singtelo
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-02-23 05:14" pubdate>
+              2025-02-23
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Java/">#Java</a>
+            
+              <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">#设计模式</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2025/01/31/Git%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/" target="_self">
           Git基础教程
         </a>

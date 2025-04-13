@@ -19,25 +19,24 @@
   <meta name="author" content="B907">
   <meta name="keywords" content="">
   
-    <meta name="description" content="事务的4个特性（ACID） 原子性（A）：事务是最小的执行单位，不可以被分割，动作要么全部完成，要么完全不起作用。  一致性（C）：执行事务前后，数据保持一致。比如转账事务中，不论事务是否成功，转账者和收款人钱的总额是不变的。  隔离性（I）：并发访问数据库时，一个用户的事务不会被其他事务所干扰，各个并发事务之间，数据库是相互独立的。  持久性（D）：一个事务被提交后，它对数据库的影响是持久的，即">
+    <meta name="description" content="底层实现JDK1.8 之前HashMap的底层数据结构是数组和链表。 key 的 hashcode 经过二次哈希处理过后得到 hash 值，然后通过 (n - 1) &amp; hash 判断当前元素存放的位置（这里的 n 指的是数组的长度），如果当前位置存在元素的话，就判断该元素与要存入的元素的 hash 值以及 key 是否相同，如果相同的话，直接覆盖，不相同就通过拉链法解决冲突。 二次哈希用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="两道常见的mysql面试题 4.10">
-<meta property="og:url" content="https://jlqusername.github.io/2025/04/10/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84mysql%E9%9D%A2%E8%AF%95%E9%A2%98%204.10/index.html">
+<meta property="og:title" content="详解HashMap">
+<meta property="og:url" content="https://jlqusername.github.io/2025/04/14/%E8%AF%A6%E8%A7%A3HashMap/index.html">
 <meta property="og:site_name" content="换功臣的个人博客网站">
-<meta property="og:description" content="事务的4个特性（ACID） 原子性（A）：事务是最小的执行单位，不可以被分割，动作要么全部完成，要么完全不起作用。  一致性（C）：执行事务前后，数据保持一致。比如转账事务中，不论事务是否成功，转账者和收款人钱的总额是不变的。  隔离性（I）：并发访问数据库时，一个用户的事务不会被其他事务所干扰，各个并发事务之间，数据库是相互独立的。  持久性（D）：一个事务被提交后，它对数据库的影响是持久的，即">
+<meta property="og:description" content="底层实现JDK1.8 之前HashMap的底层数据结构是数组和链表。 key 的 hashcode 经过二次哈希处理过后得到 hash 值，然后通过 (n - 1) &amp; hash 判断当前元素存放的位置（这里的 n 指的是数组的长度），如果当前位置存在元素的话，就判断该元素与要存入的元素的 hash 值以及 key 是否相同，如果相同的话，直接覆盖，不相同就通过拉链法解决冲突。 二次哈希用">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-04-10T09:37:38.922Z">
-<meta property="article:modified_time" content="2025-04-10T09:38:48.535Z">
+<meta property="article:published_time" content="2025-04-13T17:42:34.738Z">
+<meta property="article:modified_time" content="2025-04-13T17:46:17.276Z">
 <meta property="article:author" content="B907">
-<meta property="article:tag" content="Mysql">
-<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>两道常见的mysql面试题 4.10 - 换功臣的个人博客网站</title>
+  <title>详解HashMap - 换功臣的个人博客网站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="两道常见的mysql面试题 4.10"></span>
+            <span id="subtitle" data-typed-text="详解HashMap"></span>
           
         </div>
 
@@ -219,8 +218,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-04-10 17:37" pubdate>
-          2025年4月10日 下午
+        <time datetime="2025-04-14 01:42" pubdate>
+          2025年4月14日 凌晨
         </time>
       </span>
     
@@ -231,7 +230,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          593 字
+          933 字
         
       </span>
     
@@ -242,7 +241,7 @@
         
         
         
-          5 分钟
+          8 分钟
         
       </span>
     
@@ -288,39 +287,24 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">两道常见的mysql面试题 4.10</h1>
+            <h1 id="seo-header">详解HashMap</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="事务的4个特性（ACID）"><a href="#事务的4个特性（ACID）" class="headerlink" title="事务的4个特性（ACID）"></a>事务的4个特性（ACID）</h2><ul>
-<li><p><strong>原子性（A）</strong>：事务是最小的执行单位，不可以被分割，动作要么全部完成，要么完全不起作用。</p>
-</li>
-<li><p><strong>一致性（C）</strong>：执行事务前后，数据保持一致。比如转账事务中，不论事务是否成功，转账者和收款人钱的总额是不变的。</p>
-</li>
-<li><p><strong>隔离性（I）</strong>：并发访问数据库时，一个用户的事务不会被其他事务所干扰，各个并发事务之间，数据库是相互独立的。</p>
-</li>
-<li><p><strong>持久性（D）</strong>：一个事务被提交后，它对数据库的影响是持久的，即使数据库发生故障也不应该对其有影响。</p>
-</li>
-</ul>
-<p>事务的原子性、隔离性、持久性是为了保证事务的一致性。</p>
-<h2 id="事务的4种隔离级别"><a href="#事务的4种隔离级别" class="headerlink" title="事务的4种隔离级别"></a>事务的4种隔离级别</h2><p>SQL 标准定义了四个隔离级别：</p>
-<ul>
-<li><strong>READ-UNCOMMITTED（读未提交）</strong>：最低的隔离级别，允许读取尚未提交的数据变更，可能会导致脏读、不可重复读和幻读。</li>
-<li><strong>READ-COMMITTED（读已提交）</strong>：允许读取并发事务已经提交的数据，可以阻止脏读，但是不可重复读和幻读仍有可能发生。</li>
-<li><strong>REPEATABLE-READ（可重复读）</strong>：对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，可以阻止脏读和不可重复读，但幻读仍有可能发生。</li>
-<li>**SERIALIZABLE(串行化)**：最高的隔离级别，完全服从 ACID 的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。</li>
-</ul>
-<p>这里补充脏读、不可重复读和幻读：</p>
-<ul>
-<li><strong>脏读</strong>：读取其他事务尚未提交的数据变更</li>
-<li><strong>不可重复读</strong>：在同一事务中，对非自己修改的数据的两次读取结果不同</li>
-<li><strong>幻读</strong>：在一个事务读取了几行数据，接着另一个并发事务插入了一些数据，在随后的查询中，第一个事务就会发现多了一些原本不存在的记录</li>
-</ul>
-<p>在可重复读的隔离级别下，是可以解决一部分幻读问题的：</p>
-<ul>
-<li>给事务操作的这张表添加表锁或者 <code>Next-key Lock</code></li>
-</ul>
+                <h2 id="底层实现"><a href="#底层实现" class="headerlink" title="底层实现"></a>底层实现</h2><h3 id="JDK1-8-之前"><a href="#JDK1-8-之前" class="headerlink" title="JDK1.8 之前"></a>JDK1.8 之前</h3><p>HashMap的底层数据结构是数组和链表。</p>
+<p>key 的 <code>hashcode</code> 经过二次哈希处理过后得到 hash 值，然后通过 <code>(n - 1) &amp; hash</code> 判断当前元素存放的位置（这里的 n 指的是数组的长度），如果当前位置存在元素的话，就判断该元素与要存入的元素的 hash 值以及 key 是否相同，如果相同的话，直接覆盖，不相同就通过拉链法解决冲突。</p>
+<p>二次哈希用来优化哈希值的分布，通过对原始的 <code>hashCode()</code> 进行额外处理，二次哈希可以减小哈希碰撞，从而提高数据的分布均匀性。</p>
+<h3 id="JDK1-8之后"><a href="#JDK1-8之后" class="headerlink" title="JDK1.8之后"></a>JDK1.8之后</h3><p>HashMap的底层数据结构是数组、链表和红黑树。</p>
+<p>如果当前数组长度大于等于64，且链表长度大于阈值（默认为 8）时，将链表转化为红黑树；如果数组长度没到64，则会进行扩容。数组扩容能减少哈希冲突的发生概率（即将元素重新分散到新的、更大的数组中），这在多数情况下比直接转换为红黑树更高效。</p>
+<p>而且，转化为红黑树目的是减少搜索时间，但是红黑树需要保持自平衡，维护成本较高，因此过早引入红黑树反而会增加复杂度，花费更多的时间。</p>
+<h3 id="数组的长度为什么一定是2的x次方"><a href="#数组的长度为什么一定是2的x次方" class="headerlink" title="数组的长度为什么一定是2的x次方"></a>数组的长度为什么一定是2的x次方</h3><p>因为hash值的范围是-2147483648 ~ 2147483647，这个范围过大，因此需要让hash值对数组的长度取模运算得到的余数作为存放的位置（数组下标），但是取余(%)操作是复杂的。</p>
+<p>如果取余(%)操作中如果除数是 2 的幂次则等价于与其除数减一的与(&amp;)操作，换句话说，<code>hash % n == hash &amp; (n-1)</code> 的充要条件是 n 是 2 的 x 次方。而与(&amp;)操作是比取余操作简单很多的，所付出的代价很小，效率更高。因此，数组长度选用了2的x次方。</p>
+<p>除此之外，长度是 2 的幂次方，可以让 HashMap 在扩容的时候更均匀。而且，扩容机制也变得简单和高效：扩容后只需检查哈希值高位的变化来决定元素的新位置，要么位置不变（高位为 0），要么就是移动到新位置（高位为 1，原索引位置+原容量）。</p>
+<h2 id="为什么HashMap线程不安全"><a href="#为什么HashMap线程不安全" class="headerlink" title="为什么HashMap线程不安全"></a>为什么HashMap线程不安全</h2><p>HashMap线程不安全主要体现在因为在多线程的情况下，HashMap会发生死循环和数据丢失问题。</p>
+<h3 id="死循环"><a href="#死循环" class="headerlink" title="死循环"></a>死循环</h3><p>死循环问题发生在JDK1.8之前的HashMap，当一个桶位中有多个元素需要进行扩容时，多个线程同时对链表进行操作，头插法可能会导致链表中的节点指向错误的位置，从而形成一个环形链表，进而使得查询元素的操作陷入死循环无法结束。</p>
+<p>JDK1.8将头插法替换为了尾插法，从而避免了死循环问题。</p>
+<h3 id="数据丢失"><a href="#数据丢失" class="headerlink" title="数据丢失"></a>数据丢失</h3><p>两个线程 1,2 同时进行 put 操作，并且发生了哈希冲突（hash 函数计算出的插入下标是相同的）。不同的线程可能在不同的时间片获得 CPU 执行的机会，当前线程 1 执行完哈希冲突判断后，由于时间片耗尽挂起。线程 2 先完成了插入操作。随后，线程 1 获得时间片，由于之前已经进行过 hash 碰撞的判断，所有此时会直接进行插入，这就导致线程 2 插入的数据被线程 1 覆盖了。</p>
 
                 
               </div>
@@ -354,9 +338,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Mysql/" class="print-no-link">#Mysql</a>
-      
-        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="print-no-link">#数据库</a>
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
       
     </div>
   
@@ -368,8 +350,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>两道常见的mysql面试题 4.10</div>
-      <div>https://jlqusername.github.io/2025/04/10/两道常见的mysql面试题 4.10/</div>
+      <div>详解HashMap</div>
+      <div>https://jlqusername.github.io/2025/04/14/详解HashMap/</div>
     </div>
     <div class="license-meta">
       
@@ -381,7 +363,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年4月10日</div>
+          <div>2025年4月14日</div>
         </div>
       
       
@@ -413,18 +395,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/04/14/%E4%B8%A4%E9%81%93%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.14/" title="两道计算机网络面试题">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">两道计算机网络面试题</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/" title="两道常见的操作系统面试题 4.9">
-                        <span class="hidden-mobile">两道常见的操作系统面试题 4.9</span>
+                      <a href="/2025/04/14/%E4%B8%A4%E9%81%93%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.14/" title="两道操作系统面试题">
+                        <span class="hidden-mobile">两道操作系统面试题</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

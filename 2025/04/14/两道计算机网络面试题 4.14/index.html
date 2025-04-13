@@ -19,25 +19,24 @@
   <meta name="author" content="B907">
   <meta name="keywords" content="">
   
-    <meta name="description" content="事务的4个特性（ACID） 原子性（A）：事务是最小的执行单位，不可以被分割，动作要么全部完成，要么完全不起作用。  一致性（C）：执行事务前后，数据保持一致。比如转账事务中，不论事务是否成功，转账者和收款人钱的总额是不变的。  隔离性（I）：并发访问数据库时，一个用户的事务不会被其他事务所干扰，各个并发事务之间，数据库是相互独立的。  持久性（D）：一个事务被提交后，它对数据库的影响是持久的，即">
+    <meta name="description" content="TLS四次握手的过程第一次握手首先，客户端向服务端发送加密通信请求，这个请求主要包含三个部分：  客户端支持的 TLS 协议版本 客户端生成的一个随机数，这个随机数将会参与生成 “会话密钥” 客户端支持的密码套件列表，如 RSA 加密算法  第二次握手服务器收到客户端请求后，向客户端发出响应，主要包含四个部分：  确认 TLS 协议版本，如果浏览器不支持，则关闭加密通信 服务端生成的一个随机数，这">
 <meta property="og:type" content="article">
-<meta property="og:title" content="两道常见的mysql面试题 4.10">
-<meta property="og:url" content="https://jlqusername.github.io/2025/04/10/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84mysql%E9%9D%A2%E8%AF%95%E9%A2%98%204.10/index.html">
+<meta property="og:title" content="两道计算机网络面试题">
+<meta property="og:url" content="https://jlqusername.github.io/2025/04/14/%E4%B8%A4%E9%81%93%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.14/index.html">
 <meta property="og:site_name" content="换功臣的个人博客网站">
-<meta property="og:description" content="事务的4个特性（ACID） 原子性（A）：事务是最小的执行单位，不可以被分割，动作要么全部完成，要么完全不起作用。  一致性（C）：执行事务前后，数据保持一致。比如转账事务中，不论事务是否成功，转账者和收款人钱的总额是不变的。  隔离性（I）：并发访问数据库时，一个用户的事务不会被其他事务所干扰，各个并发事务之间，数据库是相互独立的。  持久性（D）：一个事务被提交后，它对数据库的影响是持久的，即">
+<meta property="og:description" content="TLS四次握手的过程第一次握手首先，客户端向服务端发送加密通信请求，这个请求主要包含三个部分：  客户端支持的 TLS 协议版本 客户端生成的一个随机数，这个随机数将会参与生成 “会话密钥” 客户端支持的密码套件列表，如 RSA 加密算法  第二次握手服务器收到客户端请求后，向客户端发出响应，主要包含四个部分：  确认 TLS 协议版本，如果浏览器不支持，则关闭加密通信 服务端生成的一个随机数，这">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-04-10T09:37:38.922Z">
-<meta property="article:modified_time" content="2025-04-10T09:38:48.535Z">
+<meta property="article:published_time" content="2025-04-13T17:42:15.684Z">
+<meta property="article:modified_time" content="2025-04-13T17:43:32.312Z">
 <meta property="article:author" content="B907">
-<meta property="article:tag" content="Mysql">
-<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>两道常见的mysql面试题 4.10 - 换功臣的个人博客网站</title>
+  <title>两道计算机网络面试题 - 换功臣的个人博客网站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="两道常见的mysql面试题 4.10"></span>
+            <span id="subtitle" data-typed-text="两道计算机网络面试题"></span>
           
         </div>
 
@@ -219,8 +218,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-04-10 17:37" pubdate>
-          2025年4月10日 下午
+        <time datetime="2025-04-14 01:42" pubdate>
+          2025年4月14日 凌晨
         </time>
       </span>
     
@@ -231,7 +230,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          593 字
+          875 字
         
       </span>
     
@@ -242,7 +241,7 @@
         
         
         
-          5 分钟
+          8 分钟
         
       </span>
     
@@ -288,38 +287,43 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">两道常见的mysql面试题 4.10</h1>
+            <h1 id="seo-header">两道计算机网络面试题</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="事务的4个特性（ACID）"><a href="#事务的4个特性（ACID）" class="headerlink" title="事务的4个特性（ACID）"></a>事务的4个特性（ACID）</h2><ul>
-<li><p><strong>原子性（A）</strong>：事务是最小的执行单位，不可以被分割，动作要么全部完成，要么完全不起作用。</p>
-</li>
-<li><p><strong>一致性（C）</strong>：执行事务前后，数据保持一致。比如转账事务中，不论事务是否成功，转账者和收款人钱的总额是不变的。</p>
-</li>
-<li><p><strong>隔离性（I）</strong>：并发访问数据库时，一个用户的事务不会被其他事务所干扰，各个并发事务之间，数据库是相互独立的。</p>
-</li>
-<li><p><strong>持久性（D）</strong>：一个事务被提交后，它对数据库的影响是持久的，即使数据库发生故障也不应该对其有影响。</p>
-</li>
-</ul>
-<p>事务的原子性、隔离性、持久性是为了保证事务的一致性。</p>
-<h2 id="事务的4种隔离级别"><a href="#事务的4种隔离级别" class="headerlink" title="事务的4种隔离级别"></a>事务的4种隔离级别</h2><p>SQL 标准定义了四个隔离级别：</p>
-<ul>
-<li><strong>READ-UNCOMMITTED（读未提交）</strong>：最低的隔离级别，允许读取尚未提交的数据变更，可能会导致脏读、不可重复读和幻读。</li>
-<li><strong>READ-COMMITTED（读已提交）</strong>：允许读取并发事务已经提交的数据，可以阻止脏读，但是不可重复读和幻读仍有可能发生。</li>
-<li><strong>REPEATABLE-READ（可重复读）</strong>：对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，可以阻止脏读和不可重复读，但幻读仍有可能发生。</li>
-<li>**SERIALIZABLE(串行化)**：最高的隔离级别，完全服从 ACID 的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。</li>
-</ul>
-<p>这里补充脏读、不可重复读和幻读：</p>
-<ul>
-<li><strong>脏读</strong>：读取其他事务尚未提交的数据变更</li>
-<li><strong>不可重复读</strong>：在同一事务中，对非自己修改的数据的两次读取结果不同</li>
-<li><strong>幻读</strong>：在一个事务读取了几行数据，接着另一个并发事务插入了一些数据，在随后的查询中，第一个事务就会发现多了一些原本不存在的记录</li>
-</ul>
-<p>在可重复读的隔离级别下，是可以解决一部分幻读问题的：</p>
-<ul>
-<li>给事务操作的这张表添加表锁或者 <code>Next-key Lock</code></li>
+                <h2 id="TLS四次握手的过程"><a href="#TLS四次握手的过程" class="headerlink" title="TLS四次握手的过程"></a>TLS四次握手的过程</h2><h3 id="第一次握手"><a href="#第一次握手" class="headerlink" title="第一次握手"></a>第一次握手</h3><p>首先，客户端向服务端发送加密通信请求，这个请求主要包含三个部分：</p>
+<ol>
+<li>客户端支持的 <strong>TLS 协议版本</strong></li>
+<li>客户端生成的一个<strong>随机数</strong>，这个随机数将会<strong>参与生成 “会话密钥”</strong></li>
+<li>客户端支持的<strong>密码套件列表</strong>，如 RSA 加密算法</li>
+</ol>
+<h3 id="第二次握手"><a href="#第二次握手" class="headerlink" title="第二次握手"></a>第二次握手</h3><p>服务器收到客户端请求后，向客户端发出响应，主要包含四个部分：</p>
+<ol>
+<li>确认 <strong>TLS 协议版本</strong>，如果<strong>浏览器不支持，则关闭加密通信</strong></li>
+<li>服务端生成的一个<strong>随机数</strong>，这个随机数将会<strong>参与生成 “会话密钥”</strong></li>
+<li>服务端支持的<strong>密码套件列表</strong>，如 RSA 加密算法</li>
+<li>服务器的<strong>数字证书</strong></li>
+</ol>
+<h3 id="第三次握手"><a href="#第三次握手" class="headerlink" title="第三次握手"></a>第三次握手</h3><p>客户端收到服务器的回应之后，首先通过浏览器或者操作系统中的 <strong>CA 公钥</strong>，<strong>确认服务器的数字证书的真实性</strong>。</p>
+<p>如果证书没有问题，客户端会<strong>从数字证书中取出服务器的公钥</strong>，然后使用它加密报文，向服务器发送如下信息：</p>
+<ol>
+<li>一个随机数（第三个随机数），这个随机数将会<strong>参与生成 “会话密钥”</strong>，且该随机数会<strong>被服务器公钥加密</strong></li>
+<li><strong>将加密通信算法改变的通知</strong>，告诉服务端<strong>随后的信息都将用会话秘钥加密通信</strong></li>
+<li><strong>客户端握手结束通知</strong>，表示客户端的握手阶段已经结束，同时<strong>把之前所有内容的发送的数据做个摘要，用来供服务端校验</strong></li>
+</ol>
+<p><em>在第三次握手后，通信双方确定了加密算法和三个随机数，因此可以分别生成同样的会话密钥</em></p>
+<h3 id="第四次握手"><a href="#第四次握手" class="headerlink" title="第四次握手"></a>第四次握手</h3><p>服务端将第三个随机数用服务器私钥解密，并计算出会话密钥后，向客户端发送以下信息：</p>
+<ol>
+<li><strong>将加密通信算法改变的通知</strong>，告诉客户端<strong>随后的信息都将用会话秘钥加密通信</strong></li>
+<li><strong>服务端握手结束通知</strong>，表示服务端的握手阶段已经结束，同时<strong>把之前所有内容的发送的数据做个摘要，用来供客户端校验</strong></li>
+</ol>
+<p>接下来双方就可以用会话密钥来加密通信啦！</p>
+<h2 id="HTTP和RPC的区别"><a href="#HTTP和RPC的区别" class="headerlink" title="HTTP和RPC的区别"></a>HTTP和RPC的区别</h2><ul>
+<li><strong>HTTP是协议，而RPC不是协议，而是一种调用方式</strong>，其具体实现，比如gRPC等，才是实现了RPC调用的协议。<strong>PRC存在的目的是希望程序员能像调用本地方法那样来调用远端的服务方法</strong>。</li>
+<li><strong>RPC 有很多种实现方式，不一定非得基于 TCP 协议</strong>。</li>
+<li>从发展历史来说，<strong>HTTP 主要用于 B&#x2F;S 架构，而 RPC 更多用于 C&#x2F;S 架构</strong>。但现在其实已经没分那么清了，B&#x2F;S 和 C&#x2F;S 在慢慢融合。很多软件同时支持多端，所以<strong>对外一般用 HTTP 协议</strong>，而<strong>内部集群的微服务之间则采用 RPC</strong> 进行通讯。</li>
+<li><strong>RPC 出现更早，且比目前主流的 HTTP&#x2F;1.1 性能要更好</strong>，所以大部分公司内部都还在使用 RPC。但是<strong>HTTP&#x2F;2.0在 HTTP&#x2F;1.1的基础上做了优化，性能可能比很多 RPC 协议都要好</strong>，但由于是这几年才出来的，所以也不太可能取代掉 RPC。</li>
 </ul>
 
                 
@@ -354,9 +358,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Mysql/" class="print-no-link">#Mysql</a>
-      
-        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="print-no-link">#数据库</a>
+        <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="print-no-link">#计算机网络</a>
       
     </div>
   
@@ -368,8 +370,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>两道常见的mysql面试题 4.10</div>
-      <div>https://jlqusername.github.io/2025/04/10/两道常见的mysql面试题 4.10/</div>
+      <div>两道计算机网络面试题</div>
+      <div>https://jlqusername.github.io/2025/04/14/两道计算机网络面试题 4.14/</div>
     </div>
     <div class="license-meta">
       
@@ -381,7 +383,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年4月10日</div>
+          <div>2025年4月14日</div>
         </div>
       
       
@@ -413,9 +415,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/04/14/%E4%B8%A4%E9%81%93%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.14/" title="两道计算机网络面试题">
+                      <a href="/2025/04/14/%E4%B8%A4%E9%81%93%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.14/" title="两道操作系统面试题">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">两道计算机网络面试题</span>
+                        <span class="hidden-mobile">两道操作系统面试题</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -423,8 +425,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/" title="两道常见的操作系统面试题 4.9">
-                        <span class="hidden-mobile">两道常见的操作系统面试题 4.9</span>
+                      <a href="/2025/04/10/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84mysql%E9%9D%A2%E8%AF%95%E9%A2%98%204.10/" title="两道常见的mysql面试题 4.10">
+                        <span class="hidden-mobile">两道常见的mysql面试题 4.10</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

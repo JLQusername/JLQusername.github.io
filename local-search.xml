@@ -4,6 +4,81 @@
   
   
   <entry>
+    <title>详解HashMap</title>
+    <link href="/2025/04/14/%E8%AF%A6%E8%A7%A3HashMap/"/>
+    <url>/2025/04/14/%E8%AF%A6%E8%A7%A3HashMap/</url>
+    
+    <content type="html"><![CDATA[<h2 id="底层实现"><a href="#底层实现" class="headerlink" title="底层实现"></a>底层实现</h2><h3 id="JDK1-8-之前"><a href="#JDK1-8-之前" class="headerlink" title="JDK1.8 之前"></a>JDK1.8 之前</h3><p>HashMap的底层数据结构是数组和链表。</p><p>key 的 <code>hashcode</code> 经过二次哈希处理过后得到 hash 值，然后通过 <code>(n - 1) &amp; hash</code> 判断当前元素存放的位置（这里的 n 指的是数组的长度），如果当前位置存在元素的话，就判断该元素与要存入的元素的 hash 值以及 key 是否相同，如果相同的话，直接覆盖，不相同就通过拉链法解决冲突。</p><p>二次哈希用来优化哈希值的分布，通过对原始的 <code>hashCode()</code> 进行额外处理，二次哈希可以减小哈希碰撞，从而提高数据的分布均匀性。</p><h3 id="JDK1-8之后"><a href="#JDK1-8之后" class="headerlink" title="JDK1.8之后"></a>JDK1.8之后</h3><p>HashMap的底层数据结构是数组、链表和红黑树。</p><p>如果当前数组长度大于等于64，且链表长度大于阈值（默认为 8）时，将链表转化为红黑树；如果数组长度没到64，则会进行扩容。数组扩容能减少哈希冲突的发生概率（即将元素重新分散到新的、更大的数组中），这在多数情况下比直接转换为红黑树更高效。</p><p>而且，转化为红黑树目的是减少搜索时间，但是红黑树需要保持自平衡，维护成本较高，因此过早引入红黑树反而会增加复杂度，花费更多的时间。</p><h3 id="数组的长度为什么一定是2的x次方"><a href="#数组的长度为什么一定是2的x次方" class="headerlink" title="数组的长度为什么一定是2的x次方"></a>数组的长度为什么一定是2的x次方</h3><p>因为hash值的范围是-2147483648 ~ 2147483647，这个范围过大，因此需要让hash值对数组的长度取模运算得到的余数作为存放的位置（数组下标），但是取余(%)操作是复杂的。</p><p>如果取余(%)操作中如果除数是 2 的幂次则等价于与其除数减一的与(&amp;)操作，换句话说，<code>hash % n == hash &amp; (n-1)</code> 的充要条件是 n 是 2 的 x 次方。而与(&amp;)操作是比取余操作简单很多的，所付出的代价很小，效率更高。因此，数组长度选用了2的x次方。</p><p>除此之外，长度是 2 的幂次方，可以让 HashMap 在扩容的时候更均匀。而且，扩容机制也变得简单和高效：扩容后只需检查哈希值高位的变化来决定元素的新位置，要么位置不变（高位为 0），要么就是移动到新位置（高位为 1，原索引位置+原容量）。</p><h2 id="为什么HashMap线程不安全"><a href="#为什么HashMap线程不安全" class="headerlink" title="为什么HashMap线程不安全"></a>为什么HashMap线程不安全</h2><p>HashMap线程不安全主要体现在因为在多线程的情况下，HashMap会发生死循环和数据丢失问题。</p><h3 id="死循环"><a href="#死循环" class="headerlink" title="死循环"></a>死循环</h3><p>死循环问题发生在JDK1.8之前的HashMap，当一个桶位中有多个元素需要进行扩容时，多个线程同时对链表进行操作，头插法可能会导致链表中的节点指向错误的位置，从而形成一个环形链表，进而使得查询元素的操作陷入死循环无法结束。</p><p>JDK1.8将头插法替换为了尾插法，从而避免了死循环问题。</p><h3 id="数据丢失"><a href="#数据丢失" class="headerlink" title="数据丢失"></a>数据丢失</h3><p>两个线程 1,2 同时进行 put 操作，并且发生了哈希冲突（hash 函数计算出的插入下标是相同的）。不同的线程可能在不同的时间片获得 CPU 执行的机会，当前线程 1 执行完哈希冲突判断后，由于时间片耗尽挂起。线程 2 先完成了插入操作。随后，线程 1 获得时间片，由于之前已经进行过 hash 碰撞的判断，所有此时会直接进行插入，这就导致线程 2 插入的数据被线程 1 覆盖了。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Java</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>两道操作系统面试题</title>
+    <link href="/2025/04/14/%E4%B8%A4%E9%81%93%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.14/"/>
+    <url>/2025/04/14/%E4%B8%A4%E9%81%93%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.14/</url>
+    
+    <content type="html"><![CDATA[<h2 id="死锁及其产生的原因是什么？"><a href="#死锁及其产生的原因是什么？" class="headerlink" title="死锁及其产生的原因是什么？"></a>死锁及其产生的原因是什么？</h2><p><strong>死锁</strong>是这样的一种情况：<strong>多个进程&#x2F;线程同时被阻塞，它们中的一个或者全部都在等待某个资源被释放</strong>。由于进程&#x2F;线程被无限期地阻塞，因此程序不可能正常终止。</p><p>死锁的产生有四个<strong>必要条件</strong>：</p><ol><li><strong>互斥</strong>：资源是非共享的，一个资源一次只能给一个进程&#x2F;线程使用，如果一个资源正在被使用，另一个进程&#x2F;线程想要使用这个资源，就必须等待，直到该资源被释放</li><li><strong>占有并等待</strong>：一个进程&#x2F;线程至少应该占有一个资源，并等待另一资源，而该资源被其他进程&#x2F;线程所占有</li><li><strong>非抢占</strong>：资源不能被抢占，只能由持有该资源的进程&#x2F;线程主动释放</li><li><strong>循环等待</strong>：一组等待资源的进程&#x2F;线程，各自等待的资源是其他进程&#x2F;线程所持有的</li></ol><p>只要破坏了以上任意一个条件，死锁就不会发生。</p><h2 id="对I-O模型的了解"><a href="#对I-O模型的了解" class="headerlink" title="对I&#x2F;O模型的了解"></a>对I&#x2F;O模型的了解</h2><ul><li><strong>阻塞I&#x2F;O模型</strong>：应用程序发起I&#x2F;O操作后会被阻塞，直到操作完成才返回结果。适用于对实时性要求不高的场景。</li><li><strong>非阻塞I&#x2F;O模型</strong>：应用程序发起I&#x2F;O操作后立即返回，不会被阻塞，但需要不断轮询或者使用系统调用来检查I&#x2F;O操作是否完成。适合于需要进行多路复用的场景，例如需要同时处理多个socket连接的服务器程序。</li><li><strong>I&#x2F;O复用模型</strong>：通过系统调用，应用程序同时等待多个I&#x2F;O操作，当其中任何一个I&#x2F;O操作准备就绪时，应用程序会被通知。适合于需要同时处理多个I&#x2F;O操作的场景，比如高并发的服务端程序。</li><li><strong>信号驱动I&#x2F;O模型</strong>：应用程序发起I&#x2F;O操作后，可以继续做其他事情，当I&#x2F;O操作完成时，操作系统会向应用程序发送信号来通知其完成。适合于需要异步I&#x2F;O通知的场景，可以提高系统的并发能力。</li><li><strong>异步I&#x2F;O模型</strong>：应用程序发起I&#x2F;O操作后可以立即做其他事情，当I&#x2F;O操作完成时，应用程序会得到通知。异步I&#x2F;O模型由操作系统内核完成I&#x2F;O操作，应用程序只需等待通知即可。适合于需要大量并发连接和高性能的场景，能够减少系统调用次数，提高系统效率。</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>操作系统</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>两道计算机网络面试题</title>
+    <link href="/2025/04/14/%E4%B8%A4%E9%81%93%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.14/"/>
+    <url>/2025/04/14/%E4%B8%A4%E9%81%93%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.14/</url>
+    
+    <content type="html"><![CDATA[<h2 id="TLS四次握手的过程"><a href="#TLS四次握手的过程" class="headerlink" title="TLS四次握手的过程"></a>TLS四次握手的过程</h2><h3 id="第一次握手"><a href="#第一次握手" class="headerlink" title="第一次握手"></a>第一次握手</h3><p>首先，客户端向服务端发送加密通信请求，这个请求主要包含三个部分：</p><ol><li>客户端支持的 <strong>TLS 协议版本</strong></li><li>客户端生成的一个<strong>随机数</strong>，这个随机数将会<strong>参与生成 “会话密钥”</strong></li><li>客户端支持的<strong>密码套件列表</strong>，如 RSA 加密算法</li></ol><h3 id="第二次握手"><a href="#第二次握手" class="headerlink" title="第二次握手"></a>第二次握手</h3><p>服务器收到客户端请求后，向客户端发出响应，主要包含四个部分：</p><ol><li>确认 <strong>TLS 协议版本</strong>，如果<strong>浏览器不支持，则关闭加密通信</strong></li><li>服务端生成的一个<strong>随机数</strong>，这个随机数将会<strong>参与生成 “会话密钥”</strong></li><li>服务端支持的<strong>密码套件列表</strong>，如 RSA 加密算法</li><li>服务器的<strong>数字证书</strong></li></ol><h3 id="第三次握手"><a href="#第三次握手" class="headerlink" title="第三次握手"></a>第三次握手</h3><p>客户端收到服务器的回应之后，首先通过浏览器或者操作系统中的 <strong>CA 公钥</strong>，<strong>确认服务器的数字证书的真实性</strong>。</p><p>如果证书没有问题，客户端会<strong>从数字证书中取出服务器的公钥</strong>，然后使用它加密报文，向服务器发送如下信息：</p><ol><li>一个随机数（第三个随机数），这个随机数将会<strong>参与生成 “会话密钥”</strong>，且该随机数会<strong>被服务器公钥加密</strong></li><li><strong>将加密通信算法改变的通知</strong>，告诉服务端<strong>随后的信息都将用会话秘钥加密通信</strong></li><li><strong>客户端握手结束通知</strong>，表示客户端的握手阶段已经结束，同时<strong>把之前所有内容的发送的数据做个摘要，用来供服务端校验</strong></li></ol><p><em>在第三次握手后，通信双方确定了加密算法和三个随机数，因此可以分别生成同样的会话密钥</em></p><h3 id="第四次握手"><a href="#第四次握手" class="headerlink" title="第四次握手"></a>第四次握手</h3><p>服务端将第三个随机数用服务器私钥解密，并计算出会话密钥后，向客户端发送以下信息：</p><ol><li><strong>将加密通信算法改变的通知</strong>，告诉客户端<strong>随后的信息都将用会话秘钥加密通信</strong></li><li><strong>服务端握手结束通知</strong>，表示服务端的握手阶段已经结束，同时<strong>把之前所有内容的发送的数据做个摘要，用来供客户端校验</strong></li></ol><p>接下来双方就可以用会话密钥来加密通信啦！</p><h2 id="HTTP和RPC的区别"><a href="#HTTP和RPC的区别" class="headerlink" title="HTTP和RPC的区别"></a>HTTP和RPC的区别</h2><ul><li><strong>HTTP是协议，而RPC不是协议，而是一种调用方式</strong>，其具体实现，比如gRPC等，才是实现了RPC调用的协议。<strong>PRC存在的目的是希望程序员能像调用本地方法那样来调用远端的服务方法</strong>。</li><li><strong>RPC 有很多种实现方式，不一定非得基于 TCP 协议</strong>。</li><li>从发展历史来说，<strong>HTTP 主要用于 B&#x2F;S 架构，而 RPC 更多用于 C&#x2F;S 架构</strong>。但现在其实已经没分那么清了，B&#x2F;S 和 C&#x2F;S 在慢慢融合。很多软件同时支持多端，所以<strong>对外一般用 HTTP 协议</strong>，而<strong>内部集群的微服务之间则采用 RPC</strong> 进行通讯。</li><li><strong>RPC 出现更早，且比目前主流的 HTTP&#x2F;1.1 性能要更好</strong>，所以大部分公司内部都还在使用 RPC。但是<strong>HTTP&#x2F;2.0在 HTTP&#x2F;1.1的基础上做了优化，性能可能比很多 RPC 协议都要好</strong>，但由于是这几年才出来的，所以也不太可能取代掉 RPC。</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>计算机网络</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>两道常见的mysql面试题 4.10</title>
     <link href="/2025/04/10/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84mysql%E9%9D%A2%E8%AF%95%E9%A2%98%204.10/"/>
     <url>/2025/04/10/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84mysql%E9%9D%A2%E8%AF%95%E9%A2%98%204.10/</url>

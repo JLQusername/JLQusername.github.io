@@ -19,25 +19,24 @@
   <meta name="author" content="B907">
   <meta name="keywords" content="">
   
-    <meta name="description" content="事务的4个特性（ACID） 原子性（A）：事务是最小的执行单位，不可以被分割，动作要么全部完成，要么完全不起作用。  一致性（C）：执行事务前后，数据保持一致。比如转账事务中，不论事务是否成功，转账者和收款人钱的总额是不变的。  隔离性（I）：并发访问数据库时，一个用户的事务不会被其他事务所干扰，各个并发事务之间，数据库是相互独立的。  持久性（D）：一个事务被提交后，它对数据库的影响是持久的，即">
+    <meta name="description" content="死锁及其产生的原因是什么？死锁是这样的一种情况：多个进程&#x2F;线程同时被阻塞，它们中的一个或者全部都在等待某个资源被释放。由于进程&#x2F;线程被无限期地阻塞，因此程序不可能正常终止。 死锁的产生有四个必要条件：  互斥：资源是非共享的，一个资源一次只能给一个进程&#x2F;线程使用，如果一个资源正在被使用，另一个进程&#x2F;线程想要使用这个资源，就必须等待，直到该资源被释放 占有并等">
 <meta property="og:type" content="article">
-<meta property="og:title" content="两道常见的mysql面试题 4.10">
-<meta property="og:url" content="https://jlqusername.github.io/2025/04/10/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84mysql%E9%9D%A2%E8%AF%95%E9%A2%98%204.10/index.html">
+<meta property="og:title" content="两道操作系统面试题">
+<meta property="og:url" content="https://jlqusername.github.io/2025/04/14/%E4%B8%A4%E9%81%93%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.14/index.html">
 <meta property="og:site_name" content="换功臣的个人博客网站">
-<meta property="og:description" content="事务的4个特性（ACID） 原子性（A）：事务是最小的执行单位，不可以被分割，动作要么全部完成，要么完全不起作用。  一致性（C）：执行事务前后，数据保持一致。比如转账事务中，不论事务是否成功，转账者和收款人钱的总额是不变的。  隔离性（I）：并发访问数据库时，一个用户的事务不会被其他事务所干扰，各个并发事务之间，数据库是相互独立的。  持久性（D）：一个事务被提交后，它对数据库的影响是持久的，即">
+<meta property="og:description" content="死锁及其产生的原因是什么？死锁是这样的一种情况：多个进程&#x2F;线程同时被阻塞，它们中的一个或者全部都在等待某个资源被释放。由于进程&#x2F;线程被无限期地阻塞，因此程序不可能正常终止。 死锁的产生有四个必要条件：  互斥：资源是非共享的，一个资源一次只能给一个进程&#x2F;线程使用，如果一个资源正在被使用，另一个进程&#x2F;线程想要使用这个资源，就必须等待，直到该资源被释放 占有并等">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-04-10T09:37:38.922Z">
-<meta property="article:modified_time" content="2025-04-10T09:38:48.535Z">
+<meta property="article:published_time" content="2025-04-13T17:42:24.389Z">
+<meta property="article:modified_time" content="2025-04-13T17:45:49.603Z">
 <meta property="article:author" content="B907">
-<meta property="article:tag" content="Mysql">
-<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="操作系统">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>两道常见的mysql面试题 4.10 - 换功臣的个人博客网站</title>
+  <title>两道操作系统面试题 - 换功臣的个人博客网站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="两道常见的mysql面试题 4.10"></span>
+            <span id="subtitle" data-typed-text="两道操作系统面试题"></span>
           
         </div>
 
@@ -219,8 +218,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-04-10 17:37" pubdate>
-          2025年4月10日 下午
+        <time datetime="2025-04-14 01:42" pubdate>
+          2025年4月14日 凌晨
         </time>
       </span>
     
@@ -231,7 +230,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          593 字
+          711 字
         
       </span>
     
@@ -242,7 +241,7 @@
         
         
         
-          5 分钟
+          6 分钟
         
       </span>
     
@@ -288,38 +287,26 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">两道常见的mysql面试题 4.10</h1>
+            <h1 id="seo-header">两道操作系统面试题</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="事务的4个特性（ACID）"><a href="#事务的4个特性（ACID）" class="headerlink" title="事务的4个特性（ACID）"></a>事务的4个特性（ACID）</h2><ul>
-<li><p><strong>原子性（A）</strong>：事务是最小的执行单位，不可以被分割，动作要么全部完成，要么完全不起作用。</p>
-</li>
-<li><p><strong>一致性（C）</strong>：执行事务前后，数据保持一致。比如转账事务中，不论事务是否成功，转账者和收款人钱的总额是不变的。</p>
-</li>
-<li><p><strong>隔离性（I）</strong>：并发访问数据库时，一个用户的事务不会被其他事务所干扰，各个并发事务之间，数据库是相互独立的。</p>
-</li>
-<li><p><strong>持久性（D）</strong>：一个事务被提交后，它对数据库的影响是持久的，即使数据库发生故障也不应该对其有影响。</p>
-</li>
-</ul>
-<p>事务的原子性、隔离性、持久性是为了保证事务的一致性。</p>
-<h2 id="事务的4种隔离级别"><a href="#事务的4种隔离级别" class="headerlink" title="事务的4种隔离级别"></a>事务的4种隔离级别</h2><p>SQL 标准定义了四个隔离级别：</p>
-<ul>
-<li><strong>READ-UNCOMMITTED（读未提交）</strong>：最低的隔离级别，允许读取尚未提交的数据变更，可能会导致脏读、不可重复读和幻读。</li>
-<li><strong>READ-COMMITTED（读已提交）</strong>：允许读取并发事务已经提交的数据，可以阻止脏读，但是不可重复读和幻读仍有可能发生。</li>
-<li><strong>REPEATABLE-READ（可重复读）</strong>：对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，可以阻止脏读和不可重复读，但幻读仍有可能发生。</li>
-<li>**SERIALIZABLE(串行化)**：最高的隔离级别，完全服从 ACID 的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。</li>
-</ul>
-<p>这里补充脏读、不可重复读和幻读：</p>
-<ul>
-<li><strong>脏读</strong>：读取其他事务尚未提交的数据变更</li>
-<li><strong>不可重复读</strong>：在同一事务中，对非自己修改的数据的两次读取结果不同</li>
-<li><strong>幻读</strong>：在一个事务读取了几行数据，接着另一个并发事务插入了一些数据，在随后的查询中，第一个事务就会发现多了一些原本不存在的记录</li>
-</ul>
-<p>在可重复读的隔离级别下，是可以解决一部分幻读问题的：</p>
-<ul>
-<li>给事务操作的这张表添加表锁或者 <code>Next-key Lock</code></li>
+                <h2 id="死锁及其产生的原因是什么？"><a href="#死锁及其产生的原因是什么？" class="headerlink" title="死锁及其产生的原因是什么？"></a>死锁及其产生的原因是什么？</h2><p><strong>死锁</strong>是这样的一种情况：<strong>多个进程&#x2F;线程同时被阻塞，它们中的一个或者全部都在等待某个资源被释放</strong>。由于进程&#x2F;线程被无限期地阻塞，因此程序不可能正常终止。</p>
+<p>死锁的产生有四个<strong>必要条件</strong>：</p>
+<ol>
+<li><strong>互斥</strong>：资源是非共享的，一个资源一次只能给一个进程&#x2F;线程使用，如果一个资源正在被使用，另一个进程&#x2F;线程想要使用这个资源，就必须等待，直到该资源被释放</li>
+<li><strong>占有并等待</strong>：一个进程&#x2F;线程至少应该占有一个资源，并等待另一资源，而该资源被其他进程&#x2F;线程所占有</li>
+<li><strong>非抢占</strong>：资源不能被抢占，只能由持有该资源的进程&#x2F;线程主动释放</li>
+<li><strong>循环等待</strong>：一组等待资源的进程&#x2F;线程，各自等待的资源是其他进程&#x2F;线程所持有的</li>
+</ol>
+<p>只要破坏了以上任意一个条件，死锁就不会发生。</p>
+<h2 id="对I-O模型的了解"><a href="#对I-O模型的了解" class="headerlink" title="对I&#x2F;O模型的了解"></a>对I&#x2F;O模型的了解</h2><ul>
+<li><strong>阻塞I&#x2F;O模型</strong>：应用程序发起I&#x2F;O操作后会被阻塞，直到操作完成才返回结果。适用于对实时性要求不高的场景。</li>
+<li><strong>非阻塞I&#x2F;O模型</strong>：应用程序发起I&#x2F;O操作后立即返回，不会被阻塞，但需要不断轮询或者使用系统调用来检查I&#x2F;O操作是否完成。适合于需要进行多路复用的场景，例如需要同时处理多个socket连接的服务器程序。</li>
+<li><strong>I&#x2F;O复用模型</strong>：通过系统调用，应用程序同时等待多个I&#x2F;O操作，当其中任何一个I&#x2F;O操作准备就绪时，应用程序会被通知。适合于需要同时处理多个I&#x2F;O操作的场景，比如高并发的服务端程序。</li>
+<li><strong>信号驱动I&#x2F;O模型</strong>：应用程序发起I&#x2F;O操作后，可以继续做其他事情，当I&#x2F;O操作完成时，操作系统会向应用程序发送信号来通知其完成。适合于需要异步I&#x2F;O通知的场景，可以提高系统的并发能力。</li>
+<li><strong>异步I&#x2F;O模型</strong>：应用程序发起I&#x2F;O操作后可以立即做其他事情，当I&#x2F;O操作完成时，应用程序会得到通知。异步I&#x2F;O模型由操作系统内核完成I&#x2F;O操作，应用程序只需等待通知即可。适合于需要大量并发连接和高性能的场景，能够减少系统调用次数，提高系统效率。</li>
 </ul>
 
                 
@@ -354,9 +341,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Mysql/" class="print-no-link">#Mysql</a>
-      
-        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="print-no-link">#数据库</a>
+        <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="print-no-link">#操作系统</a>
       
     </div>
   
@@ -368,8 +353,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>两道常见的mysql面试题 4.10</div>
-      <div>https://jlqusername.github.io/2025/04/10/两道常见的mysql面试题 4.10/</div>
+      <div>两道操作系统面试题</div>
+      <div>https://jlqusername.github.io/2025/04/14/两道操作系统面试题 4.14/</div>
     </div>
     <div class="license-meta">
       
@@ -381,7 +366,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年4月10日</div>
+          <div>2025年4月14日</div>
         </div>
       
       
@@ -413,9 +398,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/04/14/%E4%B8%A4%E9%81%93%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.14/" title="两道计算机网络面试题">
+                      <a href="/2025/04/14/%E8%AF%A6%E8%A7%A3HashMap/" title="详解HashMap">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">两道计算机网络面试题</span>
+                        <span class="hidden-mobile">详解HashMap</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -423,8 +408,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/" title="两道常见的操作系统面试题 4.9">
-                        <span class="hidden-mobile">两道常见的操作系统面试题 4.9</span>
+                      <a href="/2025/04/14/%E4%B8%A4%E9%81%93%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.14/" title="两道计算机网络面试题">
+                        <span class="hidden-mobile">两道计算机网络面试题</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
