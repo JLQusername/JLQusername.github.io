@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>两道计算机网络面试题 4.15</title>
+    <link href="/2025/04/15/%E4%B8%A4%E9%81%93%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.15/"/>
+    <url>/2025/04/15/%E4%B8%A4%E9%81%93%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.15/</url>
+    
+    <content type="html"><![CDATA[<h2 id="HTTP1-0、HTTP1-1和HTTP2的区别"><a href="#HTTP1-0、HTTP1-1和HTTP2的区别" class="headerlink" title="HTTP1.0、HTTP1.1和HTTP2的区别"></a>HTTP1.0、HTTP1.1和HTTP2的区别</h2><h3 id="HTTP1-0-vs-HTTP1-1"><a href="#HTTP1-0-vs-HTTP1-1" class="headerlink" title="HTTP1.0 vs HTTP1.1"></a>HTTP1.0 vs HTTP1.1</h3><ul><li><strong>连接方式</strong> : HTTP1.0默认为短链接，而HTTP1.1默认为长连接</li><li><strong>状态响应码</strong>：HTTP1.1新加入了大量的状态码，比如409请求与当前资源的规定冲突，410资源已永久删除</li><li><strong>连续发送请求</strong>：HTTP1.1在长连接的基础上，允许连续发送多个请求而不需等待响应，但存在<strong>队头阻塞</strong>问题<ul><li><strong>队头阻塞</strong>：如果第一个请求的响应较慢（如服务器处理时间长或网络延迟高），后续请求即使已经准备好，也必须等待第一个请求完成</li></ul></li><li><strong>头部压缩</strong>：HTTP1.0对Body压缩无标准支持，而HTTP1.1有标准的Body压缩机制，在请求头的Content-Encoding中</li><li><strong>缓存机制</strong>：在HTTP1.0中，主要使用Header里的 If-Modified-Since 和 Expires来判断缓存的数据是否被修改的标准，而HTTP1.1则引入了更多缓存控制策略，如Entity tag、If-Match等</li><li><strong>请求部分数据</strong>：在HTTP1.0中，存在一些浪费带宽的现象，比如客户端只需要某个对象的一部分，但是服务器却把整个对象送过来了，并且不支持断点续传功能；而HTTP1.1则在请求头中引入了range，从而允许只请求资源的某个部分，状态码为206部分内容，从而减少了对带宽的浪费。</li><li><strong>Host 头处理</strong>：HTTP1.1引入了Host头字段，允许在同一IP地址上托管多个域名，从而支持虚拟主机功能</li></ul><h3 id="HTTP1-1-vs-HTTP2-0"><a href="#HTTP1-1-vs-HTTP2-0" class="headerlink" title="HTTP1.1 vs HTTP2.0"></a>HTTP1.1 vs HTTP2.0</h3><ul><li><strong>多路复用</strong>：HTTP2可以在同一连接上同时传输多个请求和响应，且多个请求之间互不干扰，<strong>解决了HTTP1.1中的队头阻塞问题</strong><ul><li>实际上，HTTP2也存在队头阻塞问题：HTTP2依然使用TCP实现的，而TCP 要求数据按顺序到达。如果某个 TCP 数据包丢失，后续所有数据（即使属于不同 HTTP 流）必须等待重传。</li></ul></li><li><strong>二进制帧</strong>：HTTP1.1使用文本格式的报文进行传输，而HTTP2使用二进制帧进行数据传输，二进制帧更加紧凑高效，减少了传输的数据量和带宽消耗</li><li><strong>头部压缩</strong>：HTTP1.1支持对Body压缩，而不支持对Header进行压缩；HTTP2不仅支持对Body压缩，还支持用HPACK算法对Header进行压缩</li><li><strong>服务器推送</strong>：HTTP2支持服务器推送，可以在客户端请求一个资源时，将其他相关资源一并推送给客户端，从而减少了请求次数和延迟；而HTTP1.1需要客户端自己发送请求或许相关资源</li></ul><h2 id="TCP粘包和拆包问题"><a href="#TCP粘包和拆包问题" class="headerlink" title="TCP粘包和拆包问题"></a>TCP粘包和拆包问题</h2><ul><li><strong>粘包</strong>：多个数据包被合并成一个 TCP 段发送，接收方无法正确区分原始数据包的边界</li><li><strong>拆包</strong>：一个数据包被拆分成多个 TCP 段发送，接收方需要拼接才能还原完整数据。</li></ul><h3 id="产生原因"><a href="#产生原因" class="headerlink" title="产生原因"></a>产生原因</h3><ul><li>TCP协议是面向字节流的，是不维护数据边界的，只保证数据可以有序到达</li><li>因为滑动窗口的存在，TCP协议可能会拆分或合并数据</li><li>为了减少网络开销，TCP协议默认会缓存小数据包合并发送</li><li>如果数据包超过 MTU（如以太网默认 1500 字节），TCP 会自动拆包</li></ul><h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul><li><strong>固定包长度</strong>：给每个数据包固定长度，不足长度的部分补空，有点是操作简单，缺点是对于变长数据会浪费带宽</li><li><strong>特殊字符分割</strong>：用特殊字符标记数据包边界，优点是操作简单，缺点是如果数据本身包含分隔符，则需转义处理</li><li><strong>字段长度法</strong>：在数据包头部添加长度字段，明确指定数据长度，优点是高效、可处理任意长度数据包，缺点是需要额外解析长度字段才能确定字段长度</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>计算机网络</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>详解HashMap</title>
     <link href="/2025/04/14/%E8%AF%A6%E8%A7%A3HashMap/"/>
     <url>/2025/04/14/%E8%AF%A6%E8%A7%A3HashMap/</url>
@@ -106,7 +131,7 @@
   
   
   <entry>
-    <title>两道常见的操作系统面试题 4.9</title>
+    <title>两道操作系统面试题 4.9</title>
     <link href="/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/"/>
     <url>/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/</url>
     
@@ -131,7 +156,7 @@
   
   
   <entry>
-    <title>两道常见的计算机网络面试题 4.9</title>
+    <title>两道计算机网络面试题 4.9</title>
     <link href="/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/"/>
     <url>/2025/04/09/%E4%B8%A4%E9%81%93%E5%B8%B8%E8%A7%81%E7%9A%84%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95%E9%A2%98%204.9/</url>
     
