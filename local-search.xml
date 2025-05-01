@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>MCP原理</title>
+    <link href="/2025/05/02/MCP%E5%8E%9F%E7%90%86/"/>
+    <url>/2025/05/02/MCP%E5%8E%9F%E7%90%86/</url>
+    
+    <content type="html"><![CDATA[<h2 id="MCP的五个核心要素"><a href="#MCP的五个核心要素" class="headerlink" title="MCP的五个核心要素"></a>MCP的五个核心要素</h2><p>MCP是C&#x2F;S架构的，大致架构如下：</p><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs abnf">LLM &lt;<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span>&gt; MCP Client &lt;<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span>&gt; MCP Server &lt;<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span>&gt; Local Resources / Remote Resources<br><br></code></pre></td></tr></table></figure><h3 id="MCP-Host"><a href="#MCP-Host" class="headerlink" title="MCP Host"></a>MCP Host</h3><p>作为运行MCP的著应用程序，例如Claude Desktop、Cursor、Cline或其他AI工具，作为用户提供与LLM交互的接口，同时集成了MCP Client已连接MCP Server。</p><ul><li>可以让用户与LLM交互</li><li>集成Client连接Server</li></ul><h3 id="MCP-Client"><a href="#MCP-Client" class="headerlink" title="MCP Client"></a>MCP Client</h3><p>充当LLM和MCP Server之间的桥梁，嵌入在主机程序中，主要负责：</p><ul><li>接收来自LLM的请求</li><li>将请求转发到相应的MCP Server</li><li>将MCP Server的结果返回给LLM</li></ul><p>可以在MCP官网查询支持MCP的Clients，分为两类：</p><ul><li>AI编程IDE：如Cursor等</li><li>聊天客户端：如Cherry Studio、Claude等</li></ul><h3 id="MCP-Server"><a href="#MCP-Server" class="headerlink" title="MCP Server"></a>MCP Server</h3><p>每个MCP Server都提供了一组特定的工具。负责从Local Data或者Remote Service中检索信息，是MCP架构中的关键组件。与传统的远程API服务器不同，MCP服务器既可以作为本地应用程序（stdio的方式通信）在用户设备上运行，也可以部署至远程服务器（sse的方式通信，建立http连接）。作用是让LLM不仅能“说”，还能够“做”。</p><p>MCP的本质是运行在电脑上的一个Node.js程序或者Python程序，可以理解为客户端使用命令调用了电脑上的Node.js程序或者Python程序。</p><ul><li>使用TS编写的MCP Server可以通过npx命令运行</li><li>使用Python编写的MCP Server可以通过uvx命令运行</li></ul><p>在Cursor中，如果MCP Server的指示灯为绿色，则说明MCP客户端和MCP服务器已连接。</p><h3 id="Local-Resources"><a href="#Local-Resources" class="headerlink" title="Local Resources"></a>Local Resources</h3><p>本地资源，可以由MCP Server操作</p><h3 id="Remote-Resources"><a href="#Remote-Resources" class="headerlink" title="Remote Resources"></a>Remote Resources</h3><p>远程资源，可以由MCP Server操作</p><h2 id="MCP工作流程"><a href="#MCP工作流程" class="headerlink" title="MCP工作流程"></a>MCP工作流程</h2><p><img src="https://github.com/JLQusername/JLQusername.github.io/blob/main/img/MCP%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.png?raw=true" alt="MCP工作流程"></p><h3 id="初始化阶段"><a href="#初始化阶段" class="headerlink" title="初始化阶段"></a>初始化阶段</h3><ul><li>用户启动客户端</li><li>客户端与服务器建立连接（服务器可以是本地的，也可以是远程的）</li><li>客户端向服务器请求可用的工具列表（调用api tools&#x2F;list）</li><li>服务端返回工具列表和描述</li></ul><p>我们在Smithery、mcp.so等网站上寻找mcp时候，会提供相应的Tools，也就是工具列表，每个工具可以看作server提供的函数</p><h3 id="查询处理阶段"><a href="#查询处理阶段" class="headerlink" title="查询处理阶段"></a>查询处理阶段</h3><ul><li>用户输入查询</li><li>客户端发送查询和可用工具信息给大语言模型（LLM）</li><li>大模型分析后，返回给客户端响应（文本或工具调用）<ul><li>如果响应是工具调用，客户端会请求服务器执行工具调用（调用api tools&#x2F;call），然后服务器返回工具执行结果，然后客户端再把这些信息给大模型，大模型再次进行分析，进行循环。实际上，当LLM向客户端响应工具调用后，客户端还会向用户询问是否执行工具，由用户确认执行后，客户端才会请求服务器执行工具调用</li><li>如果响应是文本，则客户端显示给客户文本响应</li></ul></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>AI应用</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>从一个函数怎么写到降低公司成本</title>
     <link href="/2025/04/27/%E4%BB%8E%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0%E6%80%8E%E4%B9%88%E5%86%99%E5%88%B0%E9%99%8D%E4%BD%8E%E5%85%AC%E5%8F%B8%E6%88%90%E6%9C%AC/"/>
     <url>/2025/04/27/%E4%BB%8E%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0%E6%80%8E%E4%B9%88%E5%86%99%E5%88%B0%E9%99%8D%E4%BD%8E%E5%85%AC%E5%8F%B8%E6%88%90%E6%9C%AC/</url>

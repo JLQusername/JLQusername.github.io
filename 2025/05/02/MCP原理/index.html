@@ -19,24 +19,26 @@
   <meta name="author" content="B907">
   <meta name="keywords" content="">
   
-    <meta name="description" content="​		昨天下班前和mentor聊了近两个小时，从一个函数到底该怎么写，到究竟什么时候才应该拆一个函数出来，再到公司管理，代码修改成本，感觉学到了挺多东西，也有很多个人的感悟。 ​		一件事情有很多种解决方式，但是总有一个最好的解决方式，但这个解决方式未必是在一开始就能够知道的。在一个行业久了之后，会有自己的经验，或许可以预测出接下来客户或产品会提什么进一步的需求，从而可以为代码的修改留足“空间”，">
+    <meta name="description" content="MCP的五个核心要素MCP是C&#x2F;S架构的，大致架构如下： 12LLM &lt;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt; MCP Client &lt;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt; MCP Server &lt;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt; Local Resources &#x2F; Remote Resources  MCP Host作为运行MCP的著应用程序，例如Claude Desktop、Cursor">
 <meta property="og:type" content="article">
-<meta property="og:title" content="从一个函数怎么写到降低公司成本">
-<meta property="og:url" content="https://jlqusername.github.io/2025/04/27/%E4%BB%8E%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0%E6%80%8E%E4%B9%88%E5%86%99%E5%88%B0%E9%99%8D%E4%BD%8E%E5%85%AC%E5%8F%B8%E6%88%90%E6%9C%AC/index.html">
+<meta property="og:title" content="MCP原理">
+<meta property="og:url" content="https://jlqusername.github.io/2025/05/02/MCP%E5%8E%9F%E7%90%86/index.html">
 <meta property="og:site_name" content="换功臣的个人博客网站">
-<meta property="og:description" content="​		昨天下班前和mentor聊了近两个小时，从一个函数到底该怎么写，到究竟什么时候才应该拆一个函数出来，再到公司管理，代码修改成本，感觉学到了挺多东西，也有很多个人的感悟。 ​		一件事情有很多种解决方式，但是总有一个最好的解决方式，但这个解决方式未必是在一开始就能够知道的。在一个行业久了之后，会有自己的经验，或许可以预测出接下来客户或产品会提什么进一步的需求，从而可以为代码的修改留足“空间”，">
+<meta property="og:description" content="MCP的五个核心要素MCP是C&#x2F;S架构的，大致架构如下： 12LLM &lt;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt; MCP Client &lt;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt; MCP Server &lt;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt; Local Resources &#x2F; Remote Resources  MCP Host作为运行MCP的著应用程序，例如Claude Desktop、Cursor">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-04-26T16:34:10.236Z">
-<meta property="article:modified_time" content="2025-04-26T16:59:49.951Z">
+<meta property="og:image" content="https://github.com/JLQusername/JLQusername.github.io/blob/main/img/MCP%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.png?raw=true">
+<meta property="article:published_time" content="2025-05-01T18:54:15.524Z">
+<meta property="article:modified_time" content="2025-05-01T18:55:27.036Z">
 <meta property="article:author" content="B907">
-<meta property="article:tag" content="感悟">
+<meta property="article:tag" content="AI应用">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://github.com/JLQusername/JLQusername.github.io/blob/main/img/MCP%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.png?raw=true">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>从一个函数怎么写到降低公司成本 - 换功臣的个人博客网站</title>
+  <title>MCP原理 - 换功臣的个人博客网站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -202,7 +204,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="从一个函数怎么写到降低公司成本"></span>
+            <span id="subtitle" data-typed-text="MCP原理"></span>
           
         </div>
 
@@ -218,8 +220,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-04-27 00:34" pubdate>
-          2025年4月27日 凌晨
+        <time datetime="2025-05-02 02:54" pubdate>
+          2025年5月2日 凌晨
         </time>
       </span>
     
@@ -230,7 +232,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          840 字
+          709 字
         
       </span>
     
@@ -241,7 +243,7 @@
         
         
         
-          8 分钟
+          6 分钟
         
       </span>
     
@@ -287,16 +289,56 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">从一个函数怎么写到降低公司成本</h1>
+            <h1 id="seo-header">MCP原理</h1>
             
             
               <div class="markdown-body">
                 
-                <p>​		昨天下班前和mentor聊了近两个小时，从一个函数到底该怎么写，到究竟什么时候才应该拆一个函数出来，再到公司管理，代码修改成本，感觉学到了挺多东西，也有很多个人的感悟。</p>
-<p>​		一件事情有很多种解决方式，但是总有一个最好的解决方式，但这个解决方式未必是在一开始就能够知道的。在一个行业久了之后，会有自己的经验，或许可以预测出接下来客户或产品会提什么进一步的需求，从而可以为代码的修改留足“空间”，降低未来的成本。但是每个程序员之间的经验并不完全相同，也并不是所有的程序员都会有为代码的修改留足”空间“的意识，所以代码也有好坏之分。</p>
-<p>​		比较理想的情况是，公司里每个人都能意识到下一步的修改，都不写🔟山代码，从而在代码报错时，可以很快地定位错误，在bug修改和产品迭代时，可以尽可能少地影响原来的代码，在其他人来接手代码时，可以很快明白代码要表达的意思，这些都可以降低工作的世间，从而降低公司的成本。就算不为公司考虑，自己在忙一件事的时候，突然遇到另一个紧急任务，也并非不常见，如果能够让自己很快地改完一个bug，增加一个需求的代码，就算遇到了另一个紧急任务，也有充足的时间去应对。再说了，空下时间摸摸鱼不也挺爽的吗，反正能在ddl内完成任务。</p>
-<p>​		而更严重的一种情况是，代码的写法之间，出错的概率不同。比如普通的for循环和foreach的写法之间，显然是后者更加安全，因为后者不需要控制循环的起始点等容易出错的点。后端的出错，会导致：客户有段时间不能正常使用产品，从而受到亏损，一线和产品收到客户的反馈，需要进行汇报问题和安抚客户，这需要占用时间，前端需要首先排查问题，需要占用时间，然后发现不是前端的问题，然后后端才去排查问题，然后因为代码太烂，修bug修了好长时间。公司里的一线、产品、前端、后端都额外付出了时间，从而提高了公司成本（不只是工资，还有员工身上的福利，实际上也可以看作按时间计费的），还降低了客户的信任，而这都是因为后端代码的问题导致的，作为一个公司的管理者，会不会考虑开掉这个后端呢？</p>
-<p>​		我个人觉得，代码质量对刚入行的程序员尤为重要。因为当入行一定时间之后，代码习惯形成了，就比较难再进行修改了。并且，在实际开发环境中，限定时间成本的情况下，一个程序员是否有时间去考虑代码质量呢？应该还是比较困难的吧。</p>
+                <h2 id="MCP的五个核心要素"><a href="#MCP的五个核心要素" class="headerlink" title="MCP的五个核心要素"></a>MCP的五个核心要素</h2><p>MCP是C&#x2F;S架构的，大致架构如下：</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs abnf">LLM &lt;<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span>&gt; MCP Client &lt;<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span>&gt; MCP Server &lt;<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span>&gt; Local Resources / Remote Resources<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="MCP-Host"><a href="#MCP-Host" class="headerlink" title="MCP Host"></a>MCP Host</h3><p>作为运行MCP的著应用程序，例如Claude Desktop、Cursor、Cline或其他AI工具，作为用户提供与LLM交互的接口，同时集成了MCP Client已连接MCP Server。</p>
+<ul>
+<li>可以让用户与LLM交互</li>
+<li>集成Client连接Server</li>
+</ul>
+<h3 id="MCP-Client"><a href="#MCP-Client" class="headerlink" title="MCP Client"></a>MCP Client</h3><p>充当LLM和MCP Server之间的桥梁，嵌入在主机程序中，主要负责：</p>
+<ul>
+<li>接收来自LLM的请求</li>
+<li>将请求转发到相应的MCP Server</li>
+<li>将MCP Server的结果返回给LLM</li>
+</ul>
+<p>可以在MCP官网查询支持MCP的Clients，分为两类：</p>
+<ul>
+<li>AI编程IDE：如Cursor等</li>
+<li>聊天客户端：如Cherry Studio、Claude等</li>
+</ul>
+<h3 id="MCP-Server"><a href="#MCP-Server" class="headerlink" title="MCP Server"></a>MCP Server</h3><p>每个MCP Server都提供了一组特定的工具。负责从Local Data或者Remote Service中检索信息，是MCP架构中的关键组件。与传统的远程API服务器不同，MCP服务器既可以作为本地应用程序（stdio的方式通信）在用户设备上运行，也可以部署至远程服务器（sse的方式通信，建立http连接）。作用是让LLM不仅能“说”，还能够“做”。</p>
+<p>MCP的本质是运行在电脑上的一个Node.js程序或者Python程序，可以理解为客户端使用命令调用了电脑上的Node.js程序或者Python程序。</p>
+<ul>
+<li>使用TS编写的MCP Server可以通过npx命令运行</li>
+<li>使用Python编写的MCP Server可以通过uvx命令运行</li>
+</ul>
+<p>在Cursor中，如果MCP Server的指示灯为绿色，则说明MCP客户端和MCP服务器已连接。</p>
+<h3 id="Local-Resources"><a href="#Local-Resources" class="headerlink" title="Local Resources"></a>Local Resources</h3><p>本地资源，可以由MCP Server操作</p>
+<h3 id="Remote-Resources"><a href="#Remote-Resources" class="headerlink" title="Remote Resources"></a>Remote Resources</h3><p>远程资源，可以由MCP Server操作</p>
+<h2 id="MCP工作流程"><a href="#MCP工作流程" class="headerlink" title="MCP工作流程"></a>MCP工作流程</h2><p><img src="https://github.com/JLQusername/JLQusername.github.io/blob/main/img/MCP%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.png?raw=true" srcset="https://i0.hdslb.com/bfs/new_dyn/ad33311ea730d83a1d7a140e54ed102716345032.gif@264w_264h_1e_1c.avif" lazyload alt="MCP工作流程"></p>
+<h3 id="初始化阶段"><a href="#初始化阶段" class="headerlink" title="初始化阶段"></a>初始化阶段</h3><ul>
+<li>用户启动客户端</li>
+<li>客户端与服务器建立连接（服务器可以是本地的，也可以是远程的）</li>
+<li>客户端向服务器请求可用的工具列表（调用api tools&#x2F;list）</li>
+<li>服务端返回工具列表和描述</li>
+</ul>
+<p>我们在Smithery、mcp.so等网站上寻找mcp时候，会提供相应的Tools，也就是工具列表，每个工具可以看作server提供的函数</p>
+<h3 id="查询处理阶段"><a href="#查询处理阶段" class="headerlink" title="查询处理阶段"></a>查询处理阶段</h3><ul>
+<li>用户输入查询</li>
+<li>客户端发送查询和可用工具信息给大语言模型（LLM）</li>
+<li>大模型分析后，返回给客户端响应（文本或工具调用）<ul>
+<li>如果响应是工具调用，客户端会请求服务器执行工具调用（调用api tools&#x2F;call），然后服务器返回工具执行结果，然后客户端再把这些信息给大模型，大模型再次进行分析，进行循环。实际上，当LLM向客户端响应工具调用后，客户端还会向用户询问是否执行工具，由用户确认执行后，客户端才会请求服务器执行工具调用</li>
+<li>如果响应是文本，则客户端显示给客户文本响应</li>
+</ul>
+</li>
+</ul>
 
                 
               </div>
@@ -315,7 +357,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E4%B8%AA%E4%BA%BA%E6%84%9F%E6%82%9F/" class="category-chain-item">个人感悟</a>
+  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
   
   
 
@@ -330,7 +372,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E6%84%9F%E6%82%9F/" class="print-no-link">#感悟</a>
+        <a href="/tags/AI%E5%BA%94%E7%94%A8/" class="print-no-link">#AI应用</a>
       
     </div>
   
@@ -342,8 +384,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>从一个函数怎么写到降低公司成本</div>
-      <div>https://jlqusername.github.io/2025/04/27/从一个函数怎么写到降低公司成本/</div>
+      <div>MCP原理</div>
+      <div>https://jlqusername.github.io/2025/05/02/MCP原理/</div>
     </div>
     <div class="license-meta">
       
@@ -355,7 +397,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年4月27日</div>
+          <div>2025年5月2日</div>
         </div>
       
       
@@ -387,18 +429,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/05/02/MCP%E5%8E%9F%E7%90%86/" title="MCP原理">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">MCP原理</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/04/27/%E5%BF%83%E7%BB%8F%E7%AC%94%E8%AE%B0%E4%B8%89/" title="《心经》笔记三">
-                        <span class="hidden-mobile">《心经》笔记三</span>
+                      <a href="/2025/04/27/%E4%BB%8E%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0%E6%80%8E%E4%B9%88%E5%86%99%E5%88%B0%E9%99%8D%E4%BD%8E%E5%85%AC%E5%8F%B8%E6%88%90%E6%9C%AC/" title="从一个函数怎么写到降低公司成本">
+                        <span class="hidden-mobile">从一个函数怎么写到降低公司成本</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
