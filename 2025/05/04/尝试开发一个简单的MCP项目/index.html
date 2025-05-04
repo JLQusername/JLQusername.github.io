@@ -1,0 +1,799 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/flower_tea.png">
+  <link rel="icon" href="/img/flower_tea.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="B907">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本项目旨在构建一个本地智能舆情分析系统，通过自然语言处理与多工具写作，实现用户查询意图的自动理解、新闻检索、情绪分析、结构化输出与邮件推送。 具体执行流程依次为：用户查询，提取关键词，调用api搜索，获取新闻前5篇文章，分析情感倾向，保存为md文件，发送邮件。 只考虑MCP服务器部署在本地，项目使用python语言编写，版本为3.12。 项目链接：JLQusername&#x2F;make-a-s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="尝试开发一个简单的MCP项目">
+<meta property="og:url" content="https://jlqusername.github.io/2025/05/04/%E5%B0%9D%E8%AF%95%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84MCP%E9%A1%B9%E7%9B%AE/index.html">
+<meta property="og:site_name" content="换功臣的个人博客网站">
+<meta property="og:description" content="本项目旨在构建一个本地智能舆情分析系统，通过自然语言处理与多工具写作，实现用户查询意图的自动理解、新闻检索、情绪分析、结构化输出与邮件推送。 具体执行流程依次为：用户查询，提取关键词，调用api搜索，获取新闻前5篇文章，分析情感倾向，保存为md文件，发送邮件。 只考虑MCP服务器部署在本地，项目使用python语言编写，版本为3.12。 项目链接：JLQusername&#x2F;make-a-s">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://flowertea.site/img/mcp%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%87%E4%BB%B6%E5%A4%B9.png">
+<meta property="og:image" content="https://flowertea.site/img/client%E8%BF%90%E8%A1%8C1.png">
+<meta property="og:image" content="https://flowertea.site/img/client%E8%BF%90%E8%A1%8C2.png">
+<meta property="og:image" content="https://flowertea.site/img/client%E8%BF%90%E8%A1%8C3.png">
+<meta property="og:image" content="https://flowertea.site/img/client%E8%BF%90%E8%A1%8C4.png">
+<meta property="og:image" content="https://flowertea.site/img/client%E8%BF%90%E8%A1%8C5.png">
+<meta property="og:image" content="https://flowertea.site/img/ggnews.png">
+<meta property="og:image" content="https://flowertea.site/img/sentimel_md.png">
+<meta property="og:image" content="https://flowertea.site/img/chat.png">
+<meta property="og:image" content="https://flowertea.site/img/client%E8%BF%90%E8%A1%8C6.png">
+<meta property="article:published_time" content="2025-05-04T07:31:47.871Z">
+<meta property="article:modified_time" content="2025-05-04T07:43:34.728Z">
+<meta property="article:author" content="B907">
+<meta property="article:tag" content="项目经历">
+<meta property="article:tag" content="AI应用">
+<meta property="article:tag" content="MCP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://flowertea.site/img/mcp%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%87%E4%BB%B6%E5%A4%B9.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>尝试开发一个简单的MCP项目 - 换功臣的个人博客网站</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"jlqusername.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"https://i0.hdslb.com/bfs/new_dyn/ad33311ea730d83a1d7a140e54ed102716345032.gif@264w_264h_1e_1c.avif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>杯9换功臣喜欢喝花果茶</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/paper.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="尝试开发一个简单的MCP项目"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        B907
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-05-04 15:31" pubdate>
+          2025年5月4日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          32 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">尝试开发一个简单的MCP项目</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本项目旨在构建一个本地智能舆情分析系统，通过自然语言处理与多工具写作，实现用户查询意图的自动理解、新闻检索、情绪分析、结构化输出与邮件推送。</p>
+<p>具体执行流程依次为：用户查询，提取关键词，调用api搜索，获取新闻前5篇文章，分析情感倾向，保存为md文件，发送邮件。</p>
+<p>只考虑MCP服务器部署在本地，项目使用python语言编写，版本为3.12。</p>
+<p>项目链接：<a target="_blank" rel="noopener" href="https://github.com/JLQusername/make-a-simple-mcp-server">JLQusername&#x2F;make-a-simple-mcp-server: 本项目旨在构建一个本地智能舆情分析系统，通过自然语言处理与多工具写作，实现用户查询意图的自动理解、新闻检索、情绪分析、结构化输出与邮件推送。 (github.com)</a></p>
+<h2 id="项目初始化"><a href="#项目初始化" class="headerlink" title="项目初始化"></a>项目初始化</h2><p>首先安装<code>uv</code>，执行<code>pip install uv</code>，可以通过<code>uv --version</code>和<code>uvx --version</code>来检测环境是否安装成功。</p>
+<p>执行<code>uv init 项目名称</code>，则会在当前目录下创建一个文件夹，文件夹名称为输入的项目名称。</p>
+<p>这个文件夹下的文件如下：</p>
+<p><img src="https://flowertea.site/img/mcp%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%87%E4%BB%B6%E5%A4%B9.png" srcset="https://i0.hdslb.com/bfs/new_dyn/ad33311ea730d83a1d7a140e54ed102716345032.gif@264w_264h_1e_1c.avif" lazyload alt="image-20250503152946252"></p>
+<p>然后我们手动创建三个文件：<code>client.py</code>、<code>server.py</code>、<code>.env</code>，接下来会主要对<code>client.py</code>和<code>server.py</code>进行编写。</p>
+<h2 id="环境参数"><a href="#环境参数" class="headerlink" title="环境参数"></a>环境参数</h2><p>需要去阿里百炼平台申请一个key，然后在<code>.env</code>文件中加入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs .env">BASE_URL=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;<br>MODEL=qwq-plus<br>DASHSCOPE_API_KEY=&quot;你的key&quot;<br><br>SERPER_API_KEY=&quot;618b99091160938bb51b5968aad7312428bbba76&quot;<br>SMTP_SERVER=发送邮件服务器<br>SMTP_PORT=465<br>EMAIL_USER=你的邮箱<br>EMAIL_PASS=你的授权码<br></code></pre></td></tr></table></figure>
+
+<h2 id="client-py"><a href="#client-py" class="headerlink" title="client.py"></a>client.py</h2><p>首先引入必要的库：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">import</span> asyncio<br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> json<br><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">Optional</span>, <span class="hljs-type">List</span><br><span class="hljs-keyword">from</span> contextlib <span class="hljs-keyword">import</span> AsyncExitStack<br><span class="hljs-keyword">from</span> datetime <span class="hljs-keyword">import</span> datetime<br><span class="hljs-keyword">import</span> re<br><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI<br><span class="hljs-keyword">from</span> dotenv <span class="hljs-keyword">import</span> load_dotenv<br><span class="hljs-keyword">from</span> mcp <span class="hljs-keyword">import</span> ClientSession, StdioServerParameters<br><span class="hljs-keyword">from</span> mcp.client.stdio <span class="hljs-keyword">import</span> stdio_client<br></code></pre></td></tr></table></figure>
+
+<p>加载<code>.env</code>环境变量：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs py">load_dotenv()<br></code></pre></td></tr></table></figure>
+
+<h3 id="客户端初始化"><a href="#客户端初始化" class="headerlink" title="客户端初始化"></a>客户端初始化</h3><p>建立一个<code>MCPClient</code>类，进行初始化：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MCPClient</span>:<br><br>    <span class="hljs-comment"># 初始化客户端配置</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-variable language_">self</span>.exit_stack = AsyncExitStack()<br>        <span class="hljs-variable language_">self</span>.api_key = os.getenv(<span class="hljs-string">&quot;DASHSCOPE_API_KEY&quot;</span>)<br>        <span class="hljs-variable language_">self</span>.base_url = os.getenv(<span class="hljs-string">&quot;BASE_URL&quot;</span>)<br>        <span class="hljs-variable language_">self</span>.model = os.getenv(<span class="hljs-string">&quot;MODEL&quot;</span>)<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>.api_key:<br>            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;❌ DASHSCOPE_API_KEY is not set，请在.env文件中设置&quot;</span>)<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>.base_url:<br>            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;❌ BASE_URL is not set，请在.env文件中设置&quot;</span>)<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>.model:<br>            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;❌ MODEL is not set，请在.env文件中设置&quot;</span>)<br><br>        <span class="hljs-comment"># 初始化MCP客户端</span><br>        <span class="hljs-variable language_">self</span>.client = OpenAI(api_key=<span class="hljs-variable language_">self</span>.api_key, base_url=<span class="hljs-variable language_">self</span>.base_url)<br>        <span class="hljs-variable language_">self</span>.session: <span class="hljs-type">Optional</span>[ClientSession] = <span class="hljs-literal">None</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h3><p>客户端初始化后，要与服务端建立连接，在<code>MCPClient</code>中写一个与服务器建立连接的函数：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">connect_to_server</span>(<span class="hljs-params">self, server_script_path: <span class="hljs-built_in">str</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;连接到服务器 完成初始化阶段&quot;&quot;&quot;</span><br>    <span class="hljs-comment"># 判断服务器脚本类型</span><br>    is_py = server_script_path.endswith(<span class="hljs-string">&quot;.py&quot;</span>)<br>    is_js = server_script_path.endswith(<span class="hljs-string">&quot;.js&quot;</span>)<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> (is_py <span class="hljs-keyword">or</span> is_js):<br>        <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;❌ 服务器脚本类型错误，请使用.py或.js文件&quot;</span>)<br><br>    <span class="hljs-comment"># 确定启动命令</span><br>    command = <span class="hljs-string">&quot;python&quot;</span>, server_script_path <span class="hljs-keyword">if</span> is_py <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;node&quot;</span><br><br>    <span class="hljs-comment"># 构造 MCP 所需要的服务器参数</span><br>    server_parameters = StdioServerParameters(<br>        command=command, args=[server_script_path], env=<span class="hljs-literal">None</span><br>    )<br><br>    <span class="hljs-comment"># 启动 MCP 工具服务进程，并建立 stdio 通信</span><br>    stdio_transport = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">self</span>.exit_stack.enter_async_context(<br>        stdio_client(server_parameters)<br>    )<br><br>    <span class="hljs-comment"># 拆包通信通道，用于读取服务端返回的数据，并向服务端发送请求</span><br>    <span class="hljs-variable language_">self</span>.stdio, <span class="hljs-variable language_">self</span>.writer = stdio_transport<br><br>    <span class="hljs-comment"># 创建 MCP 客户端会话对象</span><br>    <span class="hljs-variable language_">self</span>.session = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">self</span>.exit_stack.enter_async_context(<br>        ClientSession(<span class="hljs-variable language_">self</span>.stdio, <span class="hljs-variable language_">self</span>.writer)<br>    )<br><br>    <span class="hljs-comment"># 初始化客户端会话</span><br>    <span class="hljs-keyword">await</span> <span class="hljs-variable language_">self</span>.session.initialize()<br><br>    <span class="hljs-comment"># 获取并打印工具列表</span><br>    <span class="hljs-keyword">await</span> <span class="hljs-variable language_">self</span>.list_tools()<br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">list_tools</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;请求可用工具列表&quot;&quot;&quot;</span><br>    response = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">self</span>.session.list_tools()<br>    <span class="hljs-variable language_">self</span>.tools = [<br>        &#123;<br>            <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;function&quot;</span>,<br>            <span class="hljs-string">&quot;function&quot;</span>: &#123;<br>                <span class="hljs-string">&quot;name&quot;</span>: tool.name,<br>                <span class="hljs-string">&quot;description&quot;</span>: tool.description,<br>                <span class="hljs-string">&quot;input_schema&quot;</span>: tool.inputSchema,<br>            &#125;,<br>        &#125;<br>        <span class="hljs-keyword">for</span> tool <span class="hljs-keyword">in</span> response.tools<br>    ]<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;已连接到服务器，🔧 工具列表: <span class="hljs-subst">&#123;self.tools&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="处理用户查询"><a href="#处理用户查询" class="headerlink" title="处理用户查询"></a>处理用户查询</h3><p>想要把结果输出到文件中，就要写确定输出路径的函数：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs py">  <span class="hljs-keyword">def</span> <span class="hljs-title function_">clean_filename</span>(<span class="hljs-params">self, text: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:<br>      <span class="hljs-string">&quot;&quot;&quot;清理文本，生成合法的文件名&quot;&quot;&quot;</span><br>      text = text.strip()<br>      text = re.sub(<span class="hljs-string">r&quot;[\\/:*?\&quot;&lt;&gt;|]&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, text)<br>      <span class="hljs-keyword">return</span> text[:<span class="hljs-number">50</span>]<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">prepare_file_paths</span>(<span class="hljs-params">self, query: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">str</span>, <span class="hljs-built_in">str</span>, <span class="hljs-built_in">str</span>]:<br>      <span class="hljs-string">&quot;&quot;&quot;准备文件路径相关信息&quot;&quot;&quot;</span><br>      safe_filename = <span class="hljs-variable language_">self</span>.clean_filename(query)<br>      timestamp = datetime.now().strftime(<span class="hljs-string">&quot;%Y%m%d_%H%M%S&quot;</span>)<br><br>      <span class="hljs-comment"># 准备 markdown 报告路径</span><br>      keyword_match = re.search(<br>          <span class="hljs-string">r&quot;(关于|分析|查询|搜索|查看)([^的\s，。、？\n]+)&quot;</span>, query<br>      )<br>      keyword = keyword_match.group(<span class="hljs-number">2</span>) <span class="hljs-keyword">if</span> keyword_match <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;分析对象&quot;</span><br>      safe_keyword = re.sub(<span class="hljs-string">r&#x27;[\\/:*?&quot;&lt;&gt;|]&#x27;</span>, <span class="hljs-string">&quot;&quot;</span>, keyword)[:<span class="hljs-number">20</span>]<br><br>      md_filename = <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;safe_keyword&#125;</span>_<span class="hljs-subst">&#123;timestamp&#125;</span>.md&quot;</span><br>      os.makedirs(<span class="hljs-string">&quot;./sentiment_reports&quot;</span>, exist_ok=<span class="hljs-literal">True</span>)<br>      md_path = os.path.join(<span class="hljs-string">&quot;./sentiment_reports&quot;</span>, md_filename)<br><br>      <span class="hljs-comment"># 准备对话记录路径</span><br>      txt_filename = <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;safe_filename&#125;</span>_<span class="hljs-subst">&#123;timestamp&#125;</span>.txt&quot;</span><br>      os.makedirs(<span class="hljs-string">&quot;./llm_outputs&quot;</span>, exist_ok=<span class="hljs-literal">True</span>)<br>      txt_path = os.path.join(<span class="hljs-string">&quot;./llm_outputs&quot;</span>, txt_filename)<br><br>      <span class="hljs-keyword">return</span> md_filename, md_path, txt_filename, txt_path<br></code></pre></td></tr></table></figure>
+
+<p>然后我们需要获取计划执行的工具列表：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">plan_tool_usage</span>(<span class="hljs-params">self, query: <span class="hljs-built_in">str</span>, tools: <span class="hljs-type">List</span>[<span class="hljs-built_in">dict</span>]</span>) -&gt; <span class="hljs-type">List</span>[<span class="hljs-built_in">dict</span>]:<br><span class="hljs-string">&quot;&quot;&quot;获取计划执行的工具列表&quot;&quot;&quot;</span><br><span class="hljs-comment"># 构造系统提示词 system_prompt</span><br><span class="hljs-comment"># 将所有可用工具组织为文本列表插入提示中，并明确指出工具名</span><br><span class="hljs-comment"># 限定返回格式是 JSON，防止其输出错误格式的数据</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n📤 提交给大模型的工具定义:&quot;</span>)<br><span class="hljs-built_in">print</span>(json.dumps(tools, ensure_ascii=<span class="hljs-literal">False</span>, indent=<span class="hljs-number">2</span>))<br>tool_list_text = <span class="hljs-string">&quot;\n&quot;</span>.join(<br>    [<br>        <span class="hljs-string">f&quot;- <span class="hljs-subst">&#123;tool[<span class="hljs-string">&#x27;function&#x27;</span>][<span class="hljs-string">&#x27;name&#x27;</span>]&#125;</span>: <span class="hljs-subst">&#123;tool[<span class="hljs-string">&#x27;function&#x27;</span>][<span class="hljs-string">&#x27;description&#x27;</span>]&#125;</span>&quot;</span><br>        <span class="hljs-keyword">for</span> tool <span class="hljs-keyword">in</span> tools<br>    ]<br>)<br>system_prompt = &#123;<br>    <span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;system&quot;</span>,<br>    <span class="hljs-string">&quot;content&quot;</span>: (<br>        <span class="hljs-string">&quot;你是一个智能任务规划助手，用户会给出一句自然语言请求。\n&quot;</span><br>        <span class="hljs-string">&quot;你只能从以下工具中选择（严格使用工具名称）：\n&quot;</span><br>        <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;tool_list_text&#125;</span>\n&quot;</span><br>        <span class="hljs-string">&quot;如果多个工具需要串联，后续步骤中可以使用 &#123;&#123;上一步工具名&#125;&#125; 占位。\n&quot;</span><br>        <span class="hljs-string">&quot;返回格式：JSON 数组，每个对象包含 name 和 arguments 字段。\n&quot;</span><br>        <span class="hljs-string">&quot;不要返回自然语言，不要使用未列出的工具名。&quot;</span><br>    ),<br>&#125;<br><br><span class="hljs-comment"># 构造对话上下文并调用模型</span><br><span class="hljs-comment"># 将系统提示和用户的自然语言一起作为消息输入，并选用当前的模型</span><br>planning_messages = [system_prompt, &#123;<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: query&#125;]<br><br>response = <span class="hljs-variable language_">self</span>.client.chat.completions.create(<br>    model=<span class="hljs-variable language_">self</span>.model,<br>    messages=planning_messages,<br>    tools=tools,<br>    tool_choice=<span class="hljs-string">&quot;none&quot;</span>,<br>    stream=<span class="hljs-literal">True</span>,<br>)<br><br>content = <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-keyword">for</span> chunk <span class="hljs-keyword">in</span> response:<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(chunk, <span class="hljs-string">&quot;choices&quot;</span>) <span class="hljs-keyword">and</span> chunk.choices:<br>        delta = chunk.choices[<span class="hljs-number">0</span>].delta<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(delta, <span class="hljs-string">&quot;content&quot;</span>) <span class="hljs-keyword">and</span> delta.content:<br>            content += delta.content<br><br><span class="hljs-keyword">match</span> = re.search(<span class="hljs-string">r&quot;```(?:json)?\s*([\s\S]+?)\s*```&quot;</span>, content)<br><span class="hljs-keyword">if</span> <span class="hljs-keyword">match</span>:<br>    json_text = <span class="hljs-keyword">match</span>.group(<span class="hljs-number">1</span>)<br><span class="hljs-keyword">else</span>:<br>    json_text = content<br><br><span class="hljs-comment"># 去除 /* ... */ 注释</span><br>json_text = re.sub(<span class="hljs-string">r&quot;/\*[\s\S]*?\*/&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, json_text)<br><span class="hljs-comment"># 去除 // ... 注释</span><br>json_text = re.sub(<span class="hljs-string">r&quot;//.*&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, json_text)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;🟡 解析前的内容: <span class="hljs-subst">&#123;<span class="hljs-built_in">repr</span>(json_text)&#125;</span>&quot;</span>)<br><br><span class="hljs-keyword">try</span>:<br>    plan = json.loads(json_text)<br>    <span class="hljs-keyword">return</span> plan <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(plan, <span class="hljs-built_in">list</span>) <span class="hljs-keyword">else</span> []<br><span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;❌ 获取计划执行的工具列表失败: <span class="hljs-subst">&#123;e&#125;</span>\n原始返回: <span class="hljs-subst">&#123;json_text&#125;</span>&quot;</span>)<br>    <span class="hljs-keyword">return</span> []<br></code></pre></td></tr></table></figure>
+
+<p>然后依次进行执行工具列表里的工具：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs py">   <span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">execute_tool_chain</span>(<span class="hljs-params"></span><br><span class="hljs-params">    self, query: <span class="hljs-built_in">str</span>, tool_plan: <span class="hljs-built_in">list</span>, md_path: <span class="hljs-built_in">str</span></span><br><span class="hljs-params"></span>) -&gt; <span class="hljs-built_in">list</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;执行工具调用链&quot;&quot;&quot;</span><br>    tool_outputs = &#123;&#125;<br>    messages = [&#123;<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: query&#125;]<br><br>    <span class="hljs-keyword">for</span> step <span class="hljs-keyword">in</span> tool_plan:<br>        tool_name = step[<span class="hljs-string">&quot;name&quot;</span>]<br>        tool_args = step[<span class="hljs-string">&quot;arguments&quot;</span>]<br><br>        <span class="hljs-comment"># 处理参数引用</span><br>        <span class="hljs-variable language_">self</span>.resolve_tool_args(tool_name, tool_args, tool_outputs, md_path)<br><br>        <span class="hljs-comment"># 执行工具调用</span><br>        result = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">self</span>.session.call_tool(tool_name, tool_args)<br><br>        <span class="hljs-comment"># 更新工具输出</span><br>        tool_outputs[tool_name] = result.content[<span class="hljs-number">0</span>].text<br><br>        <span class="hljs-comment"># 添加工具调用记录</span><br>        messages.append(<br>            &#123;<br>                <span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;assistant&quot;</span>,<br>                <span class="hljs-string">&quot;tool_call_id&quot;</span>: tool_name,<br>                <span class="hljs-string">&quot;content&quot;</span>: result.content[<span class="hljs-number">0</span>].text,<br>            &#125;<br>        )<br><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;🔧 执行工具: <span class="hljs-subst">&#123;tool_name&#125;</span>，参数: <span class="hljs-subst">&#123;tool_args&#125;</span>&quot;</span>)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;🔧 工具输出: <span class="hljs-subst">&#123;result.content[<span class="hljs-number">0</span>].text&#125;</span>&quot;</span>)<br><br>    <span class="hljs-keyword">return</span> messages<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">resolve_tool_args</span>(<span class="hljs-params"></span><br><span class="hljs-params">    self,</span><br><span class="hljs-params">    tool_name: <span class="hljs-built_in">str</span>,</span><br><span class="hljs-params">    tool_args: <span class="hljs-built_in">dict</span>,</span><br><span class="hljs-params">    tool_outputs: <span class="hljs-built_in">dict</span>,</span><br><span class="hljs-params">    md_filename: <span class="hljs-built_in">str</span>,</span><br><span class="hljs-params">    md_path: <span class="hljs-built_in">str</span>,</span><br><span class="hljs-params"></span>):<br>    <span class="hljs-comment"># 处理参数引用</span><br>    <span class="hljs-keyword">for</span> key, val <span class="hljs-keyword">in</span> tool_args.items():<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(val, <span class="hljs-built_in">str</span>) <span class="hljs-keyword">and</span> val.startswith(<span class="hljs-string">&quot;&#123;&#123;&quot;</span>) <span class="hljs-keyword">and</span> val.endswith(<span class="hljs-string">&quot;&#125;&#125;&quot;</span>):<br>            ref_key = val.strip(<span class="hljs-string">&quot;&#123;&#125; &quot;</span>)<br>            resolved_val = tool_outputs.get(ref_key, val)<br>            tool_args[key] = resolved_val<br><br>    <span class="hljs-comment"># 注入统一的文件名或路径（用于分析和邮件）</span><br>    <span class="hljs-keyword">if</span> tool_name == <span class="hljs-string">&quot;analyze_sentiment&quot;</span> <span class="hljs-keyword">and</span> <span class="hljs-string">&quot;file_path&quot;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> tool_args:<br>        tool_args[<span class="hljs-string">&quot;file_path&quot;</span>] = md_path<br>    <span class="hljs-keyword">if</span> (<br>        tool_name == <span class="hljs-string">&quot;send_email_with_attachment&quot;</span><br>        <span class="hljs-keyword">and</span> <span class="hljs-string">&quot;attachment_path&quot;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> tool_args<br>    ):<br>        tool_args[<span class="hljs-string">&quot;attachment_path&quot;</span>] = md_path<br></code></pre></td></tr></table></figure>
+
+<p>可以考虑把最终的对话记录保存一下：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">generate_final_response</span>(<span class="hljs-params">self, messages: <span class="hljs-built_in">list</span></span>) -&gt; <span class="hljs-built_in">str</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;生成最终响应&quot;&quot;&quot;</span><br>    response = <span class="hljs-variable language_">self</span>.client.chat.completions.create(<br>        model=<span class="hljs-variable language_">self</span>.model,<br>        messages=messages,<br>        stream=<span class="hljs-literal">True</span>,<br>    )<br><br>    final_output = <span class="hljs-string">&quot;&quot;</span><br>    <span class="hljs-keyword">for</span> chunk <span class="hljs-keyword">in</span> response:<br>        <span class="hljs-comment"># 兼容不同模型的字段名</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(chunk, <span class="hljs-string">&quot;choices&quot;</span>) <span class="hljs-keyword">and</span> chunk.choices:<br>            delta = chunk.choices[<span class="hljs-number">0</span>].delta<br>            <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(delta, <span class="hljs-string">&quot;content&quot;</span>) <span class="hljs-keyword">and</span> delta.content:<br>                final_output += delta.content<br><br>    <span class="hljs-keyword">return</span> final_output<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">save_conversation</span>(<span class="hljs-params">self, query: <span class="hljs-built_in">str</span>, final_output: <span class="hljs-built_in">str</span>, file_path: <span class="hljs-built_in">str</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;保存对话记录&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_path, <span class="hljs-string">&quot;w&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> f:<br>        f.write(<span class="hljs-string">f&quot;🤵 用户提问：<span class="hljs-subst">&#123;query&#125;</span>\n\n&quot;</span>)<br>        f.write(<span class="hljs-string">f&quot;🤖 模型回复：\n<span class="hljs-subst">&#123;final_output&#125;</span>\n&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;📄 对话记录已保存为：<span class="hljs-subst">&#123;file_path&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>整合成处理用户查询的主流程的函数：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">process_query</span>(<span class="hljs-params">self, query: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:<br>       <span class="hljs-string">&quot;&quot;&quot;处理用户查询的主流程&quot;&quot;&quot;</span><br>       <span class="hljs-comment"># 准备文件路径</span><br>       md_filename, md_path, txt_filename, txt_path = <span class="hljs-variable language_">self</span>.prepare_file_paths(query)<br><br>       <span class="hljs-comment"># 更新查询，添加文件信息</span><br>       query = query.strip() + <span class="hljs-string">f&quot; [md_filename=<span class="hljs-subst">&#123;md_filename&#125;</span>] [md_path=<span class="hljs-subst">&#123;md_path&#125;</span>]&quot;</span><br><br>       <span class="hljs-comment"># 获取工具调用计划</span><br>       tool_plan = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">self</span>.plan_tool_usage(query, <span class="hljs-variable language_">self</span>.tools)<br><br>       <span class="hljs-comment"># 执行工具调用链</span><br>       messages = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">self</span>.execute_tool_chain(query, tool_plan, md_filename, md_path)<br><br>       <span class="hljs-comment"># 生成最终响应</span><br>       final_output = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">self</span>.generate_final_response(messages)<br><br>       <span class="hljs-comment"># 保存对话记录</span><br>       <span class="hljs-variable language_">self</span>.save_conversation(query, final_output, txt_path)<br><br>       <span class="hljs-keyword">return</span> final_output<br></code></pre></td></tr></table></figure>
+
+<h3 id="对话入口"><a href="#对话入口" class="headerlink" title="对话入口"></a>对话入口</h3><p>想要和LLM进行对话，必须得有个入口：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">chat_loop</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-comment"># 初始化提示信息</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n🤖花果茶 MCP 客户端已启动！输入 &#x27;quit&#x27; 退出&quot;</span>)<br><br>    <span class="hljs-comment"># 进入主循环中等待用户输入</span><br>    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>        <span class="hljs-keyword">try</span>:<br>            query = <span class="hljs-built_in">input</span>(<span class="hljs-string">&quot;\n你: &quot;</span>).strip()<br>            <span class="hljs-keyword">if</span> query.lower() == <span class="hljs-string">&quot;quit&quot;</span>:<br>                <span class="hljs-keyword">break</span><br><br>            <span class="hljs-comment"># 处理用户的提问，并返回结果</span><br>            response = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">self</span>.process_query(query)<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\n🤖 AI: <span class="hljs-subst">&#123;response&#125;</span>&quot;</span>)<br><br>        <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\n⚠️ 发生错误: <span class="hljs-subst">&#123;<span class="hljs-built_in">str</span>(e)&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="连接关闭"><a href="#连接关闭" class="headerlink" title="连接关闭"></a>连接关闭</h3><p>任务执行结束后，为了防止浪费连接资源，需要对其进行关闭</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">cleanup</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-keyword">await</span> <span class="hljs-variable language_">self</span>.exit_stack.aclose()<br></code></pre></td></tr></table></figure>
+
+<h3 id="执行入口"><a href="#执行入口" class="headerlink" title="执行入口"></a>执行入口</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    server_script_path = <span class="hljs-string">&quot;server.py&quot;</span>  <span class="hljs-comment"># 替换成你自己的路径</span><br>    client = MCPClient()<br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">await</span> client.connect_to_server(server_script_path)<br>        <span class="hljs-keyword">await</span> client.chat_loop()<br>    <span class="hljs-keyword">finally</span>:<br>        <span class="hljs-keyword">await</span> client.cleanup()<br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    asyncio.run(main())<br></code></pre></td></tr></table></figure>
+
+<h2 id="server-py"><a href="#server-py" class="headerlink" title="server.py"></a>server.py</h2><p>对于server.py，第一步也是引入必要的库，并加载环境变量：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> json<br><span class="hljs-keyword">import</span> smtplib<br><span class="hljs-keyword">from</span> datetime <span class="hljs-keyword">import</span> datetime<br><span class="hljs-keyword">from</span> email.message <span class="hljs-keyword">import</span> EmailMessage<br><span class="hljs-keyword">import</span> httpx<br><span class="hljs-keyword">from</span> mcp.server.fastmcp <span class="hljs-keyword">import</span> FastMCP<br><span class="hljs-keyword">from</span> dotenv <span class="hljs-keyword">import</span> load_dotenv<br><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI<br><br>load_dotenv()<br></code></pre></td></tr></table></figure>
+
+<p>还需要初始化MCP服务器：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs py">mcp = FastMCP(<span class="hljs-string">&quot;NewsServer&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="获取新闻的工具"><a href="#获取新闻的工具" class="headerlink" title="获取新闻的工具"></a>获取新闻的工具</h3><p>首先要使用装饰器@mcp.tool，这可以把函数注册为工具</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs PY"><span class="hljs-meta">@mcp.tool  </span><span class="hljs-comment"># 装饰器，将函数注册为工具</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">search_google_news</span>(<span class="hljs-params">keyword: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:<br></code></pre></td></tr></table></figure>
+
+<p>新闻来源于<a target="_blank" rel="noopener" href="https://google.serper.dev/news%EF%BC%8C%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E5%AF%B9%E5%BA%94%E7%9A%84api%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9B%B4%E6%8E%A5%E4%BB%8E%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E4%B8%AD%E8%8E%B7%E5%8F%96%EF%BC%9A">https://google.serper.dev/news，我们需要对应的api，可以直接从环境变量中获取：</a></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-comment"># 从环境中获取 API 密钥并进行检查</span><br>api_key = os.getenv(<span class="hljs-string">&quot;SERPER_API_KEY&quot;</span>)<br><span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> api_key:<br>    <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;❌ SERPER_API_KEY is not set，请在.env文件中设置&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>然后写一个发请求获取新闻的函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">fetch_news_data</span>(<span class="hljs-params">api_key: <span class="hljs-built_in">str</span>, keyword: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;发送新闻搜索请求并获取结果&quot;&quot;&quot;</span><br>    url = <span class="hljs-string">&quot;https://google.serper.dev/news&quot;</span><br>    headers = &#123;<span class="hljs-string">&quot;X-API-KEY&quot;</span>: api_key, <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>&#125;<br>    payload = &#123;<span class="hljs-string">&quot;q&quot;</span>: keyword&#125;<br><br>    <span class="hljs-keyword">async</span> <span class="hljs-keyword">with</span> httpx.AsyncClient() <span class="hljs-keyword">as</span> client:<br>        response = <span class="hljs-keyword">await</span> client.post(url, headers=headers, json=payload)<br>        data = response.json()<br><br>    <span class="hljs-comment"># 检查数据</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;news&quot;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> data:<br>        <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;❌ 未获取到搜索结果&quot;</span>)<br><br>    <span class="hljs-keyword">return</span> data[<span class="hljs-string">&quot;news&quot;</span>]<br></code></pre></td></tr></table></figure>
+
+<p>然后对新闻进行保存：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">def</span> <span class="hljs-title function_">save_news_to_file</span>(<span class="hljs-params">articles: <span class="hljs-built_in">list</span></span>) -&gt; <span class="hljs-built_in">str</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;将新闻结果以带有时间戳命名后的 JSON 格式文件的形式保存在本地指定的路径&quot;&quot;&quot;</span><br>    output_dir = <span class="hljs-string">&quot;./google_news&quot;</span><br>    os.makedirs(output_dir, exist_ok=<span class="hljs-literal">True</span>)<br>    filename = <span class="hljs-string">f&quot;google_news_<span class="hljs-subst">&#123;datetime.now().strftime(<span class="hljs-string">&#x27;%Y%m%d_%H%M%S&#x27;</span>)&#125;</span>.json&quot;</span><br>    file_path = os.path.join(output_dir, filename)<br><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_path, <span class="hljs-string">&quot;w&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> f:<br>        json.dump(articles, f, ensure_ascii=<span class="hljs-literal">False</span>, indent=<span class="hljs-number">2</span>)<br><br>    <span class="hljs-keyword">return</span> file_path<br></code></pre></td></tr></table></figure>
+
+<p>完整的<code>search_google_news</code>工具如下：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-meta">@mcp.tool  </span><span class="hljs-comment"># 装饰器，将函数注册为工具</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">search_google_news</span>(<span class="hljs-params">keyword: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    使用 Serper API（Google Search 封装）根据关键词搜索新闻内容，返回前5条标题、描述和链接。</span><br><span class="hljs-string"></span><br><span class="hljs-string">    参数:</span><br><span class="hljs-string">        keyword (str): 关键词，如 &quot;小米汽车&quot;</span><br><span class="hljs-string"></span><br><span class="hljs-string">    返回:</span><br><span class="hljs-string">        str: JSON 字符串，包含新闻标题、描述、链接</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br><br>    <span class="hljs-comment"># 从环境中获取 API 密钥并进行检查</span><br>    api_key = os.getenv(<span class="hljs-string">&quot;SERPER_API_KEY&quot;</span>)<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> api_key:<br>        <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;❌ SERPER_API_KEY is not set，请在.env文件中设置&quot;</span>)<br><br>    <span class="hljs-comment"># 设置请求参数并发送请求</span><br>    news_data = <span class="hljs-keyword">await</span> fetch_news_data(api_key, keyword)<br><br>    <span class="hljs-comment"># 按照格式提取新闻，返回前五条新闻</span><br>    articles = [<br>        &#123;<br>            <span class="hljs-string">&quot;title&quot;</span>: item.get(<span class="hljs-string">&quot;title&quot;</span>),<br>            <span class="hljs-string">&quot;desc&quot;</span>: item.get(<span class="hljs-string">&quot;snippet&quot;</span>),<br>            <span class="hljs-string">&quot;url&quot;</span>: item.get(<span class="hljs-string">&quot;link&quot;</span>),<br>        &#125;<br>        <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> news_data[:<span class="hljs-number">5</span>]<br>    ]<br><br>    <span class="hljs-comment"># 将新闻结果以带有时间戳命名后的 JSON 格式文件的形式保存在本地指定的路径</span><br>    file_path = save_news_to_file(articles)<br><br>    <span class="hljs-keyword">return</span> (<br>        <span class="hljs-string">f&quot;✅ 已获取与 [<span class="hljs-subst">&#123;keyword&#125;</span>] 相关的前5条 Google 新闻：\n&quot;</span><br>        <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;json.dumps(articles, ensure_ascii=<span class="hljs-literal">False</span>, indent=<span class="hljs-number">2</span>)&#125;</span>\n&quot;</span><br>        <span class="hljs-string">f&quot;📄 已保存到：<span class="hljs-subst">&#123;file_path&#125;</span>&quot;</span><br>    )<br></code></pre></td></tr></table></figure>
+
+<h3 id="情感分析报告生成工具"><a href="#情感分析报告生成工具" class="headerlink" title="情感分析报告生成工具"></a>情感分析报告生成工具</h3><p>先写一个报告格式的函数：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">def</span> <span class="hljs-title function_">generate_sentiment_report</span>(<span class="hljs-params">text: <span class="hljs-built_in">str</span>, result: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;&quot;&quot;# 舆情分析报告</span><br><span class="hljs-string"></span><br><span class="hljs-string">    **分析时间：** <span class="hljs-subst">&#123;datetime.now().strftime(<span class="hljs-string">&#x27;%Y-%m-%d %H:%M:%S&#x27;</span>)&#125;</span></span><br><span class="hljs-string"></span><br><span class="hljs-string">    ---</span><br><span class="hljs-string"></span><br><span class="hljs-string">    ## 📥 原始文本</span><br><span class="hljs-string"></span><br><span class="hljs-string">    <span class="hljs-subst">&#123;text&#125;</span></span><br><span class="hljs-string"></span><br><span class="hljs-string">    ---</span><br><span class="hljs-string"></span><br><span class="hljs-string">    ## 📊 分析结果</span><br><span class="hljs-string"></span><br><span class="hljs-string">    <span class="hljs-subst">&#123;result&#125;</span></span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>然后可以写出情感分析报告生成工具：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-meta">@mcp.tool()</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">analyze_sentiment</span>(<span class="hljs-params">text: <span class="hljs-built_in">str</span>, file_path: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    对传入的一段文本内容进行情感分析，并保存为指定名称的 Markdown 文件。</span><br><span class="hljs-string"></span><br><span class="hljs-string">    参数:</span><br><span class="hljs-string">        text (str): 新闻描述或文本内容</span><br><span class="hljs-string">        file_path (str): 保存的 Markdown 文件路径</span><br><span class="hljs-string"></span><br><span class="hljs-string">    返回:</span><br><span class="hljs-string">        str: 完整文件路径（用于邮件发送）</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br><br>    <span class="hljs-comment"># 这里的情感分析功能需要去调用 LLM，所以从环境中获取 LLM 的一些相应配置</span><br>    api_key = os.getenv(<span class="hljs-string">&quot;DASHSCOPE_API_KEY&quot;</span>)<br>    base_url = os.getenv(<span class="hljs-string">&quot;BASE_URL&quot;</span>)<br>    model = os.getenv(<span class="hljs-string">&quot;MODEL&quot;</span>)<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> api_key:<br>        <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;❌ DASHSCOPE_API_KEY is not set，请在.env文件中设置&quot;</span>)<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> base_url:<br>        <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;❌ BASE_URL is not set，请在.env文件中设置&quot;</span>)<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> model:<br>        <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;❌ MODEL is not set，请在.env文件中设置&quot;</span>)<br><br>    <span class="hljs-comment"># 构造情感分析的提示词</span><br>    prompt = <span class="hljs-string">f&quot;请对以下新闻内容进行情绪倾向分析，并说明原因：\n\n<span class="hljs-subst">&#123;text&#125;</span>&quot;</span><br><br>    <span class="hljs-comment"># 向模型发送请求，并处理返回的结果</span><br>    client = OpenAI(api_key=api_key, base_url=base_url)<br>    response = client.chat.completions.create(<br>        model=model, messages=[&#123;<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: prompt&#125;], stream=<span class="hljs-literal">True</span><br>    )<br><br>    result = <span class="hljs-string">&quot;&quot;</span><br>    <span class="hljs-keyword">for</span> chunk <span class="hljs-keyword">in</span> response:<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(chunk, <span class="hljs-string">&quot;choices&quot;</span>) <span class="hljs-keyword">and</span> chunk.choices:<br>            delta = chunk.choices[<span class="hljs-number">0</span>].delta<br>            <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(delta, <span class="hljs-string">&quot;content&quot;</span>) <span class="hljs-keyword">and</span> delta.content:<br>                result += delta.content<br><br>    result = result.strip()<br><br>    <span class="hljs-comment"># 生成 Markdown 格式的舆情分析报告，并存放进设置好的输出目录</span><br>    markdown = generate_sentiment_report(text, result)<br><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_path, <span class="hljs-string">&quot;w&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> f:<br>        f.write(markdown)<br><br>    <span class="hljs-keyword">return</span> file_path<br></code></pre></td></tr></table></figure>
+
+<h3 id="发送邮件工具"><a href="#发送邮件工具" class="headerlink" title="发送邮件工具"></a>发送邮件工具</h3><p>这里需要拿到邮件的<code>smtp_server</code>、<code>smtp_port</code>、<code>sender_email</code>、<code>sender_pass</code>等信息</p>
+<p>增加附件函数：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">def</span> <span class="hljs-title function_">add_attachment_to_email</span>(<span class="hljs-params">msg: EmailMessage, file_path: <span class="hljs-built_in">str</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;添加附件并发送邮件&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_path, <span class="hljs-string">&quot;rb&quot;</span>) <span class="hljs-keyword">as</span> f:<br>            file_data = f.read()<br>            file_name = os.path.basename(file_path)<br>            msg.add_attachment(<br>                file_data,<br>                maintype=<span class="hljs-string">&quot;application&quot;</span>,<br>                subtype=<span class="hljs-string">&quot;octet-stream&quot;</span>,<br>                filename=<span class="hljs-string">&quot;&quot;</span>,<br>                params=&#123;<span class="hljs-string">&quot;filename*&quot;</span>: encode_rfc2231(file_name, <span class="hljs-string">&quot;utf-8&quot;</span>)&#125;,<br>            )<br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;❌ 附件读取失败: <span class="hljs-subst">&#123;<span class="hljs-built_in">str</span>(e)&#125;</span>&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>发送邮件函数：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">def</span> <span class="hljs-title function_">send_email</span>(<span class="hljs-params"></span><br><span class="hljs-params">    msg: EmailMessage,</span><br><span class="hljs-params">    to: <span class="hljs-built_in">str</span>,</span><br><span class="hljs-params">    smtp_server: <span class="hljs-built_in">str</span>,</span><br><span class="hljs-params">    smtp_port: <span class="hljs-built_in">int</span>,</span><br><span class="hljs-params">    sender_email: <span class="hljs-built_in">str</span>,</span><br><span class="hljs-params">    sender_pass: <span class="hljs-built_in">str</span>,</span><br><span class="hljs-params">    file_path: <span class="hljs-built_in">str</span>,</span><br><span class="hljs-params"></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;发送邮件&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">with</span> smtplib.SMTP_SSL(smtp_server, smtp_port) <span class="hljs-keyword">as</span> server:<br>            server.login(sender_email, sender_pass)<br>            server.send_message(msg)<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;✅ 邮件已成功发送给 <span class="hljs-subst">&#123;to&#125;</span>，附件路径: <span class="hljs-subst">&#123;file_path&#125;</span>&quot;</span><br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;❌ 邮件发送失败: <span class="hljs-subst">&#123;<span class="hljs-built_in">str</span>(e)&#125;</span>&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>这里的<code>smtp_server</code>、<code>smtp_port</code>、<code>sender_email</code>、<code>sender_pass</code>是我们在环境变量中设置的，需要进行读取</p>
+<p>然后创建邮件，填写内容，再添加附件，进行发送，就完成了</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-meta">@mcp.tool()</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">send_email_with_attachment</span>(<span class="hljs-params"></span><br><span class="hljs-params">    to: <span class="hljs-built_in">str</span>, subject: <span class="hljs-built_in">str</span>, body: <span class="hljs-built_in">str</span>, file_path: <span class="hljs-built_in">str</span></span><br><span class="hljs-params"></span>) -&gt; <span class="hljs-built_in">str</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    发送带附件的邮件。</span><br><span class="hljs-string"></span><br><span class="hljs-string">    参数:</span><br><span class="hljs-string">        to: 收件人邮箱地址</span><br><span class="hljs-string">        subject: 邮件标题</span><br><span class="hljs-string">        body: 邮件正文</span><br><span class="hljs-string">        file_path (str): 保存的 Markdown 文件路径</span><br><span class="hljs-string"></span><br><span class="hljs-string">    返回:</span><br><span class="hljs-string">        邮件发送状态说明</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br><br>    <span class="hljs-comment"># 获取并配置 SMTP 相关信息</span><br>    smtp_server = os.getenv(<span class="hljs-string">&quot;SMTP_SERVER&quot;</span>)<br>    smtp_port = <span class="hljs-built_in">int</span>(os.getenv(<span class="hljs-string">&quot;SMTP_PORT&quot;</span>, <span class="hljs-number">465</span>))<br>    sender_email = os.getenv(<span class="hljs-string">&quot;EMAIL_USER&quot;</span>)<br>    sender_pass = os.getenv(<span class="hljs-string">&quot;EMAIL_PASS&quot;</span>)<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> smtp_server:<br>        <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;❌ SMTP_SERVER is not set，请在.env文件中设置&quot;</span>)<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> sender_email:<br>        <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;❌ EMAIL_USER is not set，请在.env文件中设置&quot;</span>)<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> sender_pass:<br>        <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;❌ EMAIL_PASS is not set，请在.env文件中设置&quot;</span>)<br><br>    <span class="hljs-comment"># 获取附件文件的路径，并进行检查是否存在</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(file_path):<br>        <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">f&quot;❌ 附件路径无效，未找到文件: <span class="hljs-subst">&#123;file_path&#125;</span>&quot;</span>)<br><br>    <span class="hljs-comment"># 创建邮件并设置内容</span><br>    msg = EmailMessage()<br>    msg[<span class="hljs-string">&quot;Subject&quot;</span>] = <span class="hljs-built_in">str</span>(Header(subject, <span class="hljs-string">&quot;utf-8&quot;</span>))<br>    msg[<span class="hljs-string">&quot;From&quot;</span>] = <span class="hljs-built_in">str</span>(Header(sender_email, <span class="hljs-string">&quot;utf-8&quot;</span>))<br>    msg[<span class="hljs-string">&quot;To&quot;</span>] = <span class="hljs-built_in">str</span>(Header(to, <span class="hljs-string">&quot;utf-8&quot;</span>))<br>    msg.set_content(body, charset=<span class="hljs-string">&quot;utf-8&quot;</span>)<br><br>    <span class="hljs-comment"># 添加附件</span><br>    add_attachment_to_email(msg, file_path)<br><br>    <span class="hljs-comment"># 发送邮件</span><br>    <span class="hljs-keyword">return</span> send_email(<br>        msg, to, smtp_server, smtp_port, sender_email, sender_pass, file_path<br>    )<br></code></pre></td></tr></table></figure>
+
+<h2 id="测试运行"><a href="#测试运行" class="headerlink" title="测试运行"></a>测试运行</h2><p>运行<code>client.py</code>：</p>
+<p><img src="https://flowertea.site/img/client%E8%BF%90%E8%A1%8C1.png" srcset="https://i0.hdslb.com/bfs/new_dyn/ad33311ea730d83a1d7a140e54ed102716345032.gif@264w_264h_1e_1c.avif" lazyload alt="c4337ae2bcbe3bbe31874c071125cde"></p>
+<p><img src="https://flowertea.site/img/client%E8%BF%90%E8%A1%8C2.png" srcset="https://i0.hdslb.com/bfs/new_dyn/ad33311ea730d83a1d7a140e54ed102716345032.gif@264w_264h_1e_1c.avif" lazyload alt="5e499aad66c0f241f6cb7cd204aabe9"></p>
+<p><img src="https://flowertea.site/img/client%E8%BF%90%E8%A1%8C3.png" srcset="https://i0.hdslb.com/bfs/new_dyn/ad33311ea730d83a1d7a140e54ed102716345032.gif@264w_264h_1e_1c.avif" lazyload alt="c26006e04c550bc58806b413f7a2644"></p>
+<p><img src="https://flowertea.site/img/client%E8%BF%90%E8%A1%8C4.png" srcset="https://i0.hdslb.com/bfs/new_dyn/ad33311ea730d83a1d7a140e54ed102716345032.gif@264w_264h_1e_1c.avif" lazyload alt="df953e5433dd6b3c088da845576ced4"></p>
+<p>可以看到，对应的文件也被保存了</p>
+<p><img src="https://flowertea.site/img/client%E8%BF%90%E8%A1%8C5.png" srcset="https://i0.hdslb.com/bfs/new_dyn/ad33311ea730d83a1d7a140e54ed102716345032.gif@264w_264h_1e_1c.avif" lazyload alt="ef9bf0a1f695c620fa849a2a5e64911"></p>
+<p><img src="https://flowertea.site/img/ggnews.png" srcset="https://i0.hdslb.com/bfs/new_dyn/ad33311ea730d83a1d7a140e54ed102716345032.gif@264w_264h_1e_1c.avif" lazyload alt="1032ecffeeea0ba0bc7cc7f43fec414"></p>
+<p><img src="https://flowertea.site/img/sentimel_md.png" srcset="https://i0.hdslb.com/bfs/new_dyn/ad33311ea730d83a1d7a140e54ed102716345032.gif@264w_264h_1e_1c.avif" lazyload alt="cb54508c73bb535659e4b8127424c46"></p>
+<p><img src="https://flowertea.site/img/chat.png" srcset="https://i0.hdslb.com/bfs/new_dyn/ad33311ea730d83a1d7a140e54ed102716345032.gif@264w_264h_1e_1c.avif" lazyload alt="6be28f621ee010e21532ab30e94615d"></p>
+<p>输入quit就可以结束对话</p>
+<p><img src="https://flowertea.site/img/client%E8%BF%90%E8%A1%8C6.png" srcset="https://i0.hdslb.com/bfs/new_dyn/ad33311ea730d83a1d7a140e54ed102716345032.gif@264w_264h_1e_1c.avif" lazyload alt="66a1453198ccba8a93565cb45e02e71"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8F%82%E4%B8%8E%E9%A1%B9%E7%9B%AE/" class="category-chain-item">参与项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86/" class="print-no-link">#项目经历</a>
+      
+        <a href="/tags/AI%E5%BA%94%E7%94%A8/" class="print-no-link">#AI应用</a>
+      
+        <a href="/tags/MCP/" class="print-no-link">#MCP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>尝试开发一个简单的MCP项目</div>
+      <div>https://jlqusername.github.io/2025/05/04/尝试开发一个简单的MCP项目/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>B907</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年5月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/05/02/MCP%E5%8E%9F%E7%90%86/" title="MCP原理">
+                        <span class="hidden-mobile">MCP原理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> </b><span>霰雪纷其无垠兮，云霏霏而承宇</span> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
